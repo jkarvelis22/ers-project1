@@ -14,12 +14,14 @@ public class Driver {
 //
 //	System.out.println(ud.add(u));
 //	 
-//	 ReimbursementDAO rd = new ReimbursementDAO();
-//	 ReimbursementStatus rs = new ReimbursementStatus(1, "pending");
-//	 ReimbursementType rt = new ReimbursementType(1, "pending");
-//	 Reimbursement re = new Reimbursement(3, 400, "yes", "submitted", "Went to a Eric Clapton concert", null, 1,2, rs, rt );
-//	 System.out.println(rd.add(re));
-//	
+	 ReimbursementDAO rd = new ReimbursementDAO();
+	 ReimbursementStatus rs = new ReimbursementStatus(2, "pending");
+	 ReimbursementType rt = new ReimbursementType(2, "pending");
+	 Reimbursement re = new Reimbursement(11, 400, "yes", "submitted", "Went on a cruise", null, 2,1, rs, rt );
+	 System.out.println(rd.add(re));
+//	 Reimbursement rb = new Reimbursement(7, null, null, null, null, null, 2, 3, 2, 1);
+	 
+	System.out.println(rd.update(re));
 	
 	
 }

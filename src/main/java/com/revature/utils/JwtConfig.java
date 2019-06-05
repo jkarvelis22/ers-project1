@@ -14,13 +14,13 @@ public class JwtConfig {
 	public static final String PREFIX = "Bearer ";
 	public static final int EXPIRATION = 24 * 60 * 60;
 	public static final String SECRET = "JwtSecretKey";
-	public static final Key signingKey;
+	public static final Key SIGNING_KEY;
 	
 	static {
 		// Create a signing key using the JWT secret key
 		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 		byte[] secretBytes = DatatypeConverter.parseBase64Binary(SECRET);
-		signingKey = new SecretKeySpec(secretBytes, signatureAlgorithm.getJcaName());
+		SIGNING_KEY = new SecretKeySpec(secretBytes, signatureAlgorithm.getJcaName());
 	}
 	
 	private JwtConfig() {

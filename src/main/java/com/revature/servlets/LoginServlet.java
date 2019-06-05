@@ -25,16 +25,16 @@ import com.revature.utils.JwtGenerator;
 ////	
 //	
 ////	
-public class AuthServlet extends HttpServlet {
+public class LoginServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 //	private static Logger log = Logger.getLogger(AuthServlet.class);
 	
 	private final UserService userService = new UserService();
 	
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doPost(request,response);
-	}
+//	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//		doPost(request,response);
+//	}
 
 	
 	@Override
@@ -106,7 +106,7 @@ public class AuthServlet extends HttpServlet {
 				return;	
 			}
 			
-			Principal principal = new Principal(authUser.getId(), authUser.getRole().getRoleName());
+			Principal principal = new Principal(authUser.getId(), authUser.getRole().getRoleName(), authUser.getUsername());
 			writer.write(mapper.writeValueAsString(principal));
 			
 			/*

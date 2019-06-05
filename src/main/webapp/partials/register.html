@@ -1,0 +1,92 @@
+<div class="cotainer">
+    
+    <br>
+
+    <br>
+        
+    <h1 class="text-center">AGILERS</h1>
+        
+    <br>
+        
+    <h6 class="text-center">ALEX GABRIEL ILL LEET EXPENSE REIMBURSEMENT SYSTEM</h6>
+        
+    <br>
+        
+    <br>
+
+    <div class="row justify-content-center">
+      
+        <div class="col-md-8">
+            <div class="card" >
+                <div class="card-header">Register</div>
+                <div class="card-body">
+                    
+                        <div class="form-group row">
+                            <label for="user_name" class="col-md-4 col-form-label text-md-right">Username</label>
+                            <div class="col-md-6">
+                                <input type="text" id="register-username"  name="username" maxlength="25" placeholder="Must be 4-25 characters" size="30">
+                            </div>
+                        </div>
+
+                        <!--need to add styling-->
+                        <div class="form-group row">
+                            <label for="password" class="col-md-4 col-form-label text-md-right">Password</label>
+                            <div class="col-md-6">
+                                <input type="password" id="register-password"  name="password" maxlength="25" placeholder="Must be 4-25 characters" size="30">
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group row">
+                            <label for="full_name" class="col-md-4 col-form-label text-md-right">First Name</label>
+                            <div class="col-md-6">
+                                <input type="text" id="register-first-name"  name="first-name" maxlength="25" placeholder="Must be under 25 letters" size="30">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group row">
+                            <label for="last_name" class="col-md-4 col-form-label text-md-right">Last Name</label>
+                            <div class="col-md-6">
+                                <input type="text" id="register-last-name"  name="last-name" maxlength="25" placeholder="Must be under 25 letters" size="30">
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group row">
+                            <label for="email_address" class="col-md-4 col-form-label text-md-right">Email Address</label>
+                            <div class="col-md-6">
+                                <input type="email" id="register-email" name="email-address" maxlength="255" placeholder="Must be valid email" size="30">
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-md-6 offset-md-4">
+                            <button id= "register-account" class="btn btn-primary">
+                                Register
+                            </button>
+                            <br>
+                            <h5 class="btn btn-link"><a id="back-to-login">Back to Login page</a></h5>
+                            
+                            <div class="alert alert-danger text-center" id="alert-msg-username" role="alert">
+                                Username already taken. Please enter a new username.
+                            </div>
+
+                            <div class="alert alert-danger text-center" id="alert-msg-registration" role="alert">
+                                Please fill all fields.
+                            </div>
+
+                            <div class="text-center" id="registration-success" role="alert">
+                                Registration successful. Redirecting to Login page.
+                            </div>
+
+                        </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

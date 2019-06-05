@@ -108,7 +108,7 @@ List<Reimbursement> reimbursements = new ArrayList<>();
 			keys[0] = "reimb_id";
 			
 			PreparedStatement pstmt = conn.prepareStatement(sql, keys);
-			pstmt.setInt(1, newReimbursement.getAmount());
+			pstmt.setDouble(1, newReimbursement.getAmount());
 			pstmt.setString(2, newReimbursement.getSubmitted());
 			pstmt.setString(3, newReimbursement.getDescription());
 			pstmt.setInt(4, newReimbursement.getAuthor());
@@ -165,9 +165,38 @@ List<Reimbursement> reimbursements = new ArrayList<>();
 
 	@Override
 	public Reimbursement update(Reimbursement updatedObj) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
+		        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+
+		            conn.setAutoCommit(false);
+
+		            String sql = "UPDATE ers_reimbursement SET reimb_resolved = ?, reimb_resolver = ?, reimb_status_id = ? where reimb_id =?";
+
+		            PreparedStatement pstmt = conn.prepareStatement(sql);
+		            System.out.println("WE'RE IN THE STATEMENT");
+		            pstmt.setString(1, updatedObj.getResolved());
+		            pstmt.setInt(2, updatedObj.getResolver());
+		            pstmt.setInt(3, updatedObj.getReimbStatus().getReimbStatusId());
+		            pstmt.setInt(4, updatedObj.getId());
+		            System.out.println("POPULATED THE SQL STATEMENT");
+		            
+		            int rowsUpdated = pstmt.executeUpdate();
+		            System.out.println("EXECUTE THE UPDATE");
+
+		            if (rowsUpdated != 0) {
+		            	System.out.println("CHECKING ROWS UPDATED");
+		                conn.commit();
+		                System.out.println("COMMITTED THE CHANGES");
+		                return updatedObj;
+		            }
+
+		        } catch (SQLException e) {
+		            e.getMessage();
+		        }
+
+		        return null;
+		    }
+
 
 	@Override
 	public boolean delete(int id) {

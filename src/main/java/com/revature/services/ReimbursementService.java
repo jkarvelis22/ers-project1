@@ -25,7 +25,7 @@ public class ReimbursementService {
 		return reimDao.getByAuthor(reimAuthor);
 	}
 	
-	public Reimbursement add(Reimbursement newReimbursement) {
+	public  Reimbursement add(Reimbursement newReimbursement) {
 		//check if all fields are not empty, except for receipt
 		if(newReimbursement.getAmount() == 0 || newReimbursement.getSubmitted().equals("") 
 				|| newReimbursement.getDescription().equals("") || newReimbursement.getAuthor() == 0
@@ -36,4 +36,9 @@ public class ReimbursementService {
 		return reimDao.add(newReimbursement);
 	}
 	
+	public Reimbursement update(Reimbursement newReimbursement) {
+        reimDao.update(newReimbursement);
+        return newReimbursement; 
+	}
 }
+	

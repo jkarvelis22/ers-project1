@@ -203,7 +203,7 @@ import com.revature.models.Principal;
 import com.revature.models.User;
 import com.revature.services.UserService;
 
-@WebServlet("/users/")
+@WebServlet("/users")
 public class UserServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
@@ -211,30 +211,54 @@ public class UserServlet extends HttpServlet {
 	
 	private final UserService userService = new UserService();
 
+//	@Override
+//	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+//
+//		log.info("Request received by UserServlet.doGet()");
+//		response.setContentType("application/json");
+//		
+//		Principal principal = (Principal) request.getAttribute("principal");
+//		PrintWriter writer = response.getWriter();
+//		ObjectMapper mapper = new ObjectMapper();
+//		
+//		if(principal == null) {
+//			log.warn("No principal attribute found on request");
+//			response.setStatus(401);
+//			return;
+//		}
+//		
+//		if(!principal.getRole().equalsIgnoreCase("Manager")) {
+//			log.warn("Unauthorized access attempt made");
+//			response.setStatus(403);
+//			return;
+//		}
+//		
+//		List<User> users = userService.getAll();
+//		String userJSON = mapper.writeValueAsString(users);
+//		response.setStatus(200);
+//		writer.write(userJSON);
+		
+		
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-
-		log.info("Request received by UserServlet.doGet()");
 		response.setContentType("application/json");
-		
 		Principal principal = (Principal) request.getAttribute("principal");
 		PrintWriter writer = response.getWriter();
 		ObjectMapper mapper = new ObjectMapper();
-		
+
 		if(principal == null) {
-			log.warn("No principal attribute found on request");
+			System.out.println("[WARN] - no principal attribute found on request");
 			response.setStatus(401);
 			return;
 		}
-		
-		if(!principal.getRole().equalsIgnoreCase("ADMIN")) {
-			log.warn("Unauthorized access attempt made");
+		if(!principal.getRole().equalsIgnoreCase("Manager")) {
+			System.out.println("[WARN] - unauthorized access attempt made");
 			response.setStatus(403);
 			return;
 		}
 		
 		List<User> users = userService.getAll();
-		String userJSON = mapper.writeValueAsString(users);
+		String userJSON = mapper.writeValueAsString(users); //automatically makes user list into a json string
 		response.setStatus(200);
 		writer.write(userJSON);
 		

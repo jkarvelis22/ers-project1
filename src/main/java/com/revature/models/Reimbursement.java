@@ -3,12 +3,12 @@ package com.revature.models;
 public class Reimbursement {
 	
 	private int id;
-	private int amount;
+	private double amount;
 	private String submitted;
 	private String resolved;
 	private String description;
 	private Object receipt;
-	private int author;
+	private int author; 
 	private int resolver;
 	private ReimbursementStatus reimbStatus;
 	private ReimbursementType reimbType;
@@ -16,8 +16,9 @@ public class Reimbursement {
 	public Reimbursement() {
 		super();
 	}
+
 	
-	public Reimbursement(int id, int amount, String submitted, String resolved, String description, Object receipt, int author, int resolver, ReimbursementStatus reimbStatus, ReimbursementType reimbType) {
+	public Reimbursement(int id, double amount, String submitted, String resolved, String description, Object receipt, int author, int resolver, ReimbursementStatus reimbStatus, ReimbursementType reimbType) {
 		this.id = id;
 		this.amount = amount;
 		this.submitted = submitted;
@@ -38,11 +39,11 @@ public class Reimbursement {
 		this.id = id;
 	}
 
-	public int getAmount() {
+	public double getAmount() {
 		return amount;
 	}
 
-	public void setAmount(int amount) {
+	public void setAmount(double amount) {
 		this.amount = amount;
 	}
 
@@ -110,11 +111,14 @@ public class Reimbursement {
 		this.reimbType = reimbType;
 	}
 
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + amount;
+		long temp;
+		temp = Double.doubleToLongBits(amount);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + author;
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
 		result = prime * result + id;
@@ -127,6 +131,7 @@ public class Reimbursement {
 		return result;
 	}
 
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -136,7 +141,7 @@ public class Reimbursement {
 		if (getClass() != obj.getClass())
 			return false;
 		Reimbursement other = (Reimbursement) obj;
-		if (amount != other.amount)
+		if (Double.doubleToLongBits(amount) != Double.doubleToLongBits(other.amount))
 			return false;
 		if (author != other.author)
 			return false;
@@ -177,11 +182,14 @@ public class Reimbursement {
 		return true;
 	}
 
+
 	@Override
 	public String toString() {
 		return "Reimbursement [id=" + id + ", amount=" + amount + ", submitted=" + submitted + ", resolved=" + resolved
 				+ ", description=" + description + ", receipt=" + receipt + ", author=" + author + ", resolver="
 				+ resolver + ", reimbStatus=" + reimbStatus + ", reimbType=" + reimbType + "]";
 	}
+
+	
 	
 }

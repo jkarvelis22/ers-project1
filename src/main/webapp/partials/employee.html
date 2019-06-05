@@ -1,0 +1,93 @@
+
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css">
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+
+<style>
+body {
+    font-size: 2rem;
+}
+.container {
+    max-width: 100%;
+}
+.btn {
+    font-size: 2rem;
+}
+.form-control {
+    font-size: 2rem;
+}
+.navbar-brand {
+    font-size: 2rem;
+}
+tr:nth-child(even) {
+  background-color: #f2f2f2
+}
+#logout:hover {
+    color: white;
+    transition: all .5s ease;
+    cursor: pointer;
+}
+#new-reim-request:hover {
+    color: darkgreen;
+    transition: all .5s ease;
+    cursor: pointer;
+}
+#logout-again:hover {
+    color: darkgreen;
+    transition: all .5s ease;
+    cursor: pointer;
+}
+</style>
+
+<div id="top-nav" class="navbar navbar-inverse navbar-static-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <h5 class="navbar-brand">Welcome to REIMB INC.</h5>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a id = "logout"><i class="fa fa-sign-out" class="pointer"></i> Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+        <ul class="nav nav-pills nav-stacked" style="border-right:1px solid rgb(140, 145, 146)">
+            <!--<li class="nav-header"></li>-->
+            <li><a id= "new-reim-request"><i class="fa fa-tags" class="pointer" ></i> Create New Reimbursement</a></li>
+            <li><a id = "logout-again"><i class="fa fa-lock" class="pointer"></i> Logout</a></li>
+        </ul>
+    </div><!-- /span-3 -->
+    <div class="col-lg-10 col-md-10 col-sm-9 col-xs-12">
+        <!-- Right -->
+        <h1><strong><span class="fa fa-dashboard"></span> Your Reimbursement Requests</strong></h1>
+        <hr>
+        <div class="container">
+            <div class="row">
+                <table id="employee-reimbursements" class="table table-striped table-bordered"  cellspacing="5" width="100%">
+                    <thead >
+                        <tr>
+                            <th>Reimb ID</th>
+                            <th>Amount</th>
+                            <th>Date Submitted</th>
+                            <th>Date Resolved</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+
+<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    

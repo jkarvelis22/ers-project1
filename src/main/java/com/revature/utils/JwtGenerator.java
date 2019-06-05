@@ -29,7 +29,7 @@ public class JwtGenerator {
 				.setIssuer("revature")
 				.claim("role", subject.getRole().getRoleName())
 				.setExpiration(new Date(nowMillis + JwtConfig.EXPIRATION * 1000))
-				.signWith(signatureAlgorithm, JwtConfig.signingKey);
+				.signWith(signatureAlgorithm, JwtConfig.SIGNING_KEY);
 		
 //		log.info("JWT successfully created");
 		
