@@ -6,8 +6,10 @@ import java.util.List;
 
 import com.revature.daos.ReimbursementDAO;
 import com.revature.models.Reimbursement;
+import com.revature.utils.Josh4J;
 
 public class ReimbursementService {
+	static Josh4J j = Josh4J.getInstance();
 
 //	private static Logger log = Logger.getLogger(ReimbursementService.class);
 	

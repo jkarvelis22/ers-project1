@@ -13,13 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.revature.models.Reimbursement;
-import com.revature.models.ReimbursementInputs;
-import com.revature.models.ReimbursementType;
 import com.revature.models.User;
 import com.revature.services.ReimbursementService;
+import com.revature.utils.Josh4J;
 
 @WebServlet("/employee")
 	public class EmployeeServlet extends HttpServlet {
+	static Josh4J j = Josh4J.getInstance();
 	
 	private static final long serialVersionUID = 1L;	
 		private final ReimbursementService reimbService = new ReimbursementService();

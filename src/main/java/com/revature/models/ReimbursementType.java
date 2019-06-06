@@ -1,6 +1,9 @@
 package com.revature.models;
 
+import com.revature.utils.Josh4J;
+
 public class ReimbursementType {
+	static Josh4J j = Josh4J.getInstance();
 	
 	private int reimbTypeId;
 	private String reimbTypeName;

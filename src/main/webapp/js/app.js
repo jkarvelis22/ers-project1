@@ -1,752 +1,602 @@
-
+const NAVBAR = document.getElementById('navbar');
+const PAGE_BODY = document.getElementById('app-view');
+const DYNAMIC_CSS = document.getElementById('dynamic-css');
 
 window.onload = function() {
-    loadLogin();
+  console.log("Beginning to render the page...");
+  const USER_SERVICE = new UserService();
+  const AUTH_SERVICE = new AuthService();  
+  const ROUTER = new Router();
+  const FINANCE_MANAGER_COMPONENT = new FinanceManagerComponent();
+  const EMPLOYEE_COMPONENT = new EmployeeComponent();
+  const LOGIN_COMPONENT = new LoginComponent(AUTH_SERVICE, ROUTER);
+  const REGISTER_COMPONENT = new RegisterComponent(USER_SERVICE, ROUTER);
+  const NAVBAR_COMPONENT = new NavbarComponent(ROUTER);
+
+  console.log("Components loaded");
+
+  console.log("Populating routes");
+  ROUTER.addRoute("login", LOGIN_COMPONENT);
+  ROUTER.addRoute("register", REGISTER_COMPONENT);
+  ROUTER.addRoute("manager", FINANCE_MANAGER_COMPONENT);
+  ROUTER.addRoute("employee", EMPLOYEE_COMPONENT);
+  console.log("Routes populated.")
+
+  NAVBAR_COMPONENT.render();
+  LOGIN_COMPONENT.render();
+}
+//------------------------------------------------------------------
+// Components
+
+class LoginComponent {
+
+  template = 
+  `<div class="container">
+
+  <div class="box-border" id="login-box">
+      <div class="box-body">
+          
+              <h3>Login</h3>
+          <p>Sign in to an existing account:</p>
+          <hr>
+              <i class="fas fa-user"></i><input type="text" placeholder="Username" id="username-input">
+              <br>
+              <i class="fas fa-unlock-alt"></i><input type="password" placeholder="Password" id="password-input">
+              <br>
+          <button id="login-btn">Login&nbsp;<i class="fas fa-arrow-right"></i></button>
+          <br>
+          <a href="#" id="register-link">Register a new account</a>
+      </div>
+  </div>
+
+</div> 
+`;
+
+constructor(authService, router) {
+  console.log('Instantiating LoginComponent');
+  this.authService = authService;
+  this.router = router;
+  console.log('Instantiation of LoginComponent complete.')
 }
 
-/*
-    Login component
-        - loadLogin()
-        - configureLogin()
-        - login()
-*/
+render = () => {
+  console.log('Rendering LoginComponent template...');
+  PAGE_BODY.innerHTML = this.template;
+  document.getElementById('login-btn').addEventListener('click', this.login);
+  document.getElementById('register-link').addEventListener('click', this.router.fetchComponent('register').render);
 
-async function loadLogin() {
+  console.log('LoginComponent rendered.');
+}
+
+login = async () => {
+
+  let username = document.getElementById('username-cred').value;
+  let password = document.getElementById('password-cred').value;
+
+  let user = await this.authService.authenticate(username, password);
+
+  if(user) {
+      console.log('Authentication successful!');
+      document.getElementById('alert-msg').setAttribute('hidden', true);
+      this.router.fetchComponent('dashboard').render();
+
+  } else {
+      document.getElementById('alert-msg').removeAttribute('hidden');
+  }
+}
+}
+//   constructor(authService, router) {
+//     console.log("Instantiating LoginComponent...");
+//     this.authService = authService;
+//     this.router = router;
+//     this.FinanceManagerComponent = FinanceManagerComponent;
+//     console.log("Instantiation of LoginComponent complete.")
+//   }
+
+//   render = () => {
+//     console.log('Rendering LoginComponent template...');
+//     PAGE_BODY.innerHTML = this.thing;
+//     document.getElementById('login-btn').addEventListener('click', this.login);
+//     document.getElementById('register-link').addEventListener('click', this.router.fetchComponent('register').render);
+//     console.log('LoginComponent rendered.');  
+  
+//   }
+
+//   login = async () => {
+
+//     let username = document.getElementById('username-input').value;
+//     let password = document.getElementById('password-input').value;
+
+//     let user = await this.authService.authenticate(username, password);
+
+//     if(user) {
+//         console.log('Authentication successful!');
+//         if (user.roleId == 1) {
+//             this.router.fetchComponent("manager").render();
+//             return;
+//         } else if(user.roleId == 2) {
+//             this.router.fetchComponent("employee").render();
+//             return;
+//         }
+       
+//     } else {
+//         document.getElementById('alert-msg').removeAttribute('hidden');
+//     }
+
+//   }
+// }
+
+class NavbarComponent {
+  
+  template = `
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+      <a class="navbar-brand" id="to-dashboard" href="#">REIMB Inc.</a>
+      
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#app-nav" aria-controls="app-nav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+      </button>
+  
+      <div class="collapse navbar-collapse" id="app-nav">
+          <ul class="navbar-nav mr-auto">
+              <li class="nav-item active">
+                  <a class="nav-link" href="#" id="toHome">Home<span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item dropdown"><a
+                  class="nav-link dropdown-toggle" id="dropdown01" 
+                  data-toggle="dropdown" aria-haspopup="true"
+                  aria-expanded="true"><span id="dropdown-label">Pages</span></a>
+                  <div class="dropdown-menu" id="nav-dropdown" aria-labelledby="dropdown01">
+                      <a class="dropdown-item" id="to-login" href="#">Login</a> 
+                      <a class="dropdown-item" id="to-register" href="#">Register</a>
+                  </div>
+              </li>
+          </ul>
+
+      </div>
+  </nav>
+  `;
+
+ // constructor(LoginComponent, RegisterComponent) {
+   constructor(router) {
+    console.log("Instantiating NavbarComponent...");
+    this.router = router;
+    console.log("NavBar component instantiation complete.");
+  }
+
+  render = () => {
+    console.log("Rendering NavbarComponent template...");
+    NAVBAR.innerHTML = this.template;
+    // document.getElementById("toHome").addEventListener("click", this.router.fetchComponent("login").render)
+    // document.getElementById("nav-pending").addEventListener("click", this.router.fetchComponent("manager").render);
+    document.getElementById("to-login").addEventListener("click", this.router.fetchComponent("login").render);
+    document.getElementById("to-register").addEventListener("click", this.router.fetchComponent("register").render);
+    console.log("Rendering complete.");
+  }
+}
+
+class RegisterComponent {
+
+  template = `
+  <div class="container">
     
-    APP_VIEW.innerHTML = await fetchView('login.view');
-    DYNAMIC_CSS_LINK.href = 'css/login.css';
-    configureLogin();
-}
+  <br>
 
-function configureLogin() {
+  <br>
+      
+  <h1 class="text-center">REIMB INC.</h1>
+      
+  <br>
+      
+  <h6 class="text-center">REIMB INC.</h6>
+      
+  <br>
+      
+  <br>
 
-    localStorage.clear();
-    document.getElementById('alert-msg').hidden = true;
-    document.getElementById('submit-creds').addEventListener('click', login);
-    document.getElementById('register-button').addEventListener('click', loadRegister);
-}
-
-async function login() {
-
-    let credentials = [];
+  <div class="row justify-content-center">
     
-    credentials.push(document.getElementById('username-cred').value);
-    credentials.push(document.getElementById('password-cred').value);
-    console.log(credentials);
-    console.log('Racecar');
-    
-    let response = await fetch('auth', {
-        method: 'POST',
-      //  mode: 'cors',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(credentials)
-    });
+      <div class="col-md-8">
+          <div class="card" >
+              <div class="card-header">Register</div>
+              <div class="card-body">
+                  
+                      <div class="form-group row">
+                          <label for="user_name" class="col-md-4 col-form-label text-md-right">Username</label>
+                          <div class="col-md-6">
+                              <input type="text" id="register-username"  name="username" maxlength="25" placeholder="Must be 4-25 characters" size="30">
+                          </div>
+                      </div>
 
-    if(response.status == 200) {
-        document.getElementById('alert-msg').hidden = true;
-        localStorage.setItem('jwt', response.headers.get('Authorization'));
-        getDashboard();
-    } else {
-        document.getElementById('alert-msg').hidden = false;
-    }
-}
+                      <!--need to add styling-->
+                      <div class="form-group row">
+                          <label for="password" class="col-md-4 col-form-label text-md-right">Password</label>
+                          <div class="col-md-6">
+                              <input type="password" id="register-password"  name="password" maxlength="25" placeholder="Must be 4-25 characters" size="30">
+                          </div>
+                      </div>
 
-async function getDashboard() {
-	
-	let response = await fetch('users',{
-		method: 'GET',
-		mode: 'cors',
-		headers: {
-			'Authorization' : localStorage.getItem('jwt')
-		}	
-	});
-	
-    let results = await response.json();
+                      <div class="form-group row">
+                          <label for="full_name" class="col-md-4 col-form-label text-md-right">First Name</label>
+                          <div class="col-md-6">
+                              <input type="text" id="register-first-name"  name="first-name" maxlength="25" placeholder="Must be under 25 letters" size="30">
+                          </div>
+                      </div>
 
-    if (results.constructor === Array) {
-        loadManager();
-    } else {
-        loadEmployee();
-    }
-} 
 
-//-----------------------------------------------------------------------------------------
+                      <div class="form-group row">
+                          <label for="last_name" class="col-md-4 col-form-label text-md-right">Last Name</label>
+                          <div class="col-md-6">
+                              <input type="text" id="register-last-name"  name="last-name" maxlength="25" placeholder="Must be under 25 letters" size="30">
+                          </div>
+                      </div>
 
-/*
-    Register component
+                      <div class="form-group row">
+                          <label for="email_address" class="col-md-4 col-form-label text-md-right">Email Address</label>
+                          <div class="col-md-6">
+                              <input type="email" id="register-email" name="email-address" maxlength="255" placeholder="Must be valid email" size="30">
+                          </div>
+                      </div>
 
-        - loadRegister()
-        - configureRegister()
-        ...
-        ...
-        ...
-        - register()
-*/
+                      <div class="col-md-6 offset-md-4">
+                          <button id="register-account" class="btn btn-primary">
+                              Register
+                          </button>
+                          <br>
+                          <h5 class="btn btn-link"><a id="back-to-login">Back to Login page</a></h5>
+                       
+                          <div class="text-center" id="registration-success" role="alert">
+                              Registration successful. Redirecting to Login page.
+                          </div>
 
-async function loadRegister() {
-    
-    APP_VIEW.innerHTML = await fetchView('register.view');
-    DYNAMIC_CSS_LINK.href = 'css/register.css';
-    configureRegister();
-}
+                      </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+`;
 
-function configureRegister() {
-    
-    document.getElementById('alert-msg-username').hidden = true;
-    document.getElementById('alert-msg-registration').hidden = true;
-    document.getElementById('registration-success').hidden = true;
-    document.getElementById('register-username').addEventListener('blur', validateUsername);
-    document.getElementById('register-password').addEventListener('blur', validatePassword);
-    document.getElementById('register-first-name').addEventListener('blur', validateFirstName);
-    document.getElementById('register-last-name').addEventListener('blur', validateLastName);
-    document.getElementById('register-email').addEventListener('blur', validateEmail);
-    document.getElementById('register-email').addEventListener('input', undisableRegisterButton);
-    document.getElementById('register-account').addEventListener('click', register);
-    document.getElementById('back-to-login').addEventListener('click', loadLogin);
-    
-    document.getElementById('register-password').disabled = true;
-    document.getElementById('register-first-name').disabled = true;
-    document.getElementById('register-last-name').disabled = true;
-    document.getElementById('register-email').disabled = true;
-    document.getElementById('register-account').disabled = true;
-}
+  constructor(userService, router) {
+    console.log("Intantiating UserService...");
+    this.userService = userService;
+    this.router = router;
+    console.log("UserService instantiation complete.");
+  }
 
-function validateUsername(event) {
-	if(event.target.value.length < 4 ){
-        if(document.getElementById('register-username').value == ''){   
-            document.getElementById('register-password').disabled = true;
-        }    
-        if(document.getElementById('register-password').value == ''){
-            document.getElementById('register-first-name').disabled = true;
-        }
-        if(document.getElementById('register-first-name').value == ''){
-            document.getElementById('register-last-name').disabled = true;
-        }
-        if(document.getElementById('register-last-name').value == ''){
-            document.getElementById('register-email').disabled = true;
-        }
-        document.getElementById('register-account').disabled = true;
-    }
-    else{
-        document.getElementById('register-password').disabled = false;
-    }
-}
+  render = () => {
+    console.log("Rendering RegisterComponent template...");
+    PAGE_BODY.innerHTML = this.template;
+    document.getElementById("register-account").addEventListener("click", this.register);
+    document.getElementById("back-to-login").addEventListener("click", this.router.fetchComponent("login").render);
+    console.log("Rendering complete.");
+  }
 
-function validatePassword(event) {
-	if(event.target.value.length < 4 ){
-        if(document.getElementById('register-password').value == ''){
-            document.getElementById('register-first-name').disabled = true;
-        }
-        if(document.getElementById('register-first-name').value == ''){
-            document.getElementById('register-last-name').disabled = true;
-        }
-        if(document.getElementById('register-last-name').value == ''){
-            document.getElementById('register-email').disabled = true;
-        }
-        document.getElementById('register-account').disabled = true;
-    }
-    else{
-        document.getElementById('register-first-name').disabled = false;
-    }
-}
-
-function validateFirstName(event) {
-	if(!(/^[a-zA-Z ]+$/.test(event.target.value))){
-        if(document.getElementById('register-first-name').value == ''){
-            document.getElementById('register-last-name').disabled = true;
-        }
-        if(document.getElementById('register-last-name').value == ''){
-            document.getElementById('register-email').disabled = true;
-        }
-        document.getElementById('register-account').disabled = true;
-    }
-    else{
-        document.getElementById('register-last-name').disabled = false;
-    }
-}
-
-function validateLastName(event) {
-	if(!(/^[a-zA-Z ]+$/.test(event.target.value))){
-        if(document.getElementById('register-last-name').value == ''){
-            document.getElementById('register-email').disabled = true;
-        }
-        document.getElementById('register-account').disabled = true;
-    }
-    else{
-        document.getElementById('register-email').disabled = false;
-    }
-}
-
-function validateEmail(event) {
-	if(!(/\S+@\S+\.\S+/.test(event.target.value))){
-        document.getElementById('register-account').disabled = true;
-    }else{
-        document.getElementById('register-account').disabled = false;
-    }
-}
-
-function undisableRegisterButton() {
-    if(
-        document.getElementById('register-username').value != '' &&
-        document.getElementById('register-password').value != '' &&
-        document.getElementById('register-first-name').value != '' &&
-        document.getElementById('register-last-name').value != '' &&
-        document.getElementById('register-email').value != ''
-    ) {
-        document.getElementById('register-account').disabled = false;
-    } else {
-        document.getElementById('register-account').disabled = true;
-    }   
-}
-
-async function register() {
-    
+  register = () => {
     let newUser = {
-        id: 0,
-        username: document.getElementById('register-username').value,
-        password: document.getElementById('register-password').value,
-        firstName: document.getElementById('register-first-name').value,
-        lastName: document.getElementById('register-last-name').value,
-        email: document.getElementById('register-email').value,
-        role: {}
-    };
-
-    let response = await fetch('users', {
-        method: 'POST',
-        mode: 'cors',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(newUser)
-    });
-
-    let responseBody = await response.json();
-
-    if(response.status == 409) {
-        document.getElementById('alert-msg-username').hidden = false;
-        return;
+      username: document.getElementById("username-input").value,
+      password: document.getElementById("password-input").value,
+      firstName: document.getElementById("first-name-input").value,
+      lastName: document.getElementById("last-name-input").value,
+      email: document.getElementById('email-input').value
     }
+    let registeredUser = this.userService.register(newUser);
 
-    if(responseBody != null) {
-        
-    	document.getElementById('alert-msg-registration').hidden = true;
-        document.getElementById('registration-success').hidden = false;
-        setTimeout(loadLogin, 3000);
-        
+    if(registeredUser) {
+        console.log("Registration successful");
+        this.router.fetchComponent("login").render();
     } else {
-    	document.getElementById('alert-msg-registration').hidden = false;
+        console.log("Registration unsuccessful");
+    }
+  }
+}
+
+class FinanceManagerComponent {
+
+  template = `
+  <table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">First</th>
+      <th scope="col">Last</th>
+      <th scope="col">Handle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">1</th>
+      <td>Mark</td>
+      <td>Otto</td>
+      <td>@mdo</td>
+      <td>
+              <button type="button" class="btn btn-outline-success">Approve</button>
+          </td>
+      <td>
+              <button type="button" class="btn btn-outline-danger">Deny</button>
+          </td>
+    </tr>
+    <tr>
+      <th scope="row">2</th>
+      <td>Jacob</td>
+      <td>Thornton</td>
+      <td>@fat</td>
+    </tr>
+    <tr>
+      <th scope="row">3</th>
+      <td colspan="2">Larry the Bird</td>
+      <td>@twitter</td>
+    </tr>
+  </tbody>
+</table>
+  `;
+
+  render = () => {
+    console.log("Rendering the FinanceManagerComponent template...");
+    PAGE_BODY.innerHTML = this.template;
+  }
+  
+  constructor(userService, router) {
+    console.log("Intantiating UserService...");
+    this.userService = userService;
+    this.router = router;
+    console.log("UserService instantiation complete.");
+  }
+
+  render = () => {
+    console.log("Rendering RegisterComponent template...");
+    PAGE_BODY.innerHTML = this.template;
+    document.getElementById("register-account").addEventListener("click", this.register);
+    document.getElementById("back-to-login").addEventListener("click", this.router.fetchComponent("login").render);
+    console.log("Rendering complete.");
+  }
+}
+
+class EmployeeComponent {
+    template = `
+    <div id="top-nav" class="navbar navbar-inverse navbar-static-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <h5 class="navbar-brand">Welcome to REIMB INC.</h5>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a id = "logout"><i class="fa fa-sign-out" class="pointer"></i> Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+        <ul class="nav nav-pills nav-stacked" style="border-right:1px solid rgb(140, 145, 146)">
+            <!--<li class="nav-header"></li>-->
+            <li><a id= "new-reim-request"><i class="fa fa-tags" class="pointer" ></i> Create New Reimbursement</a></li>
+            <li><a id = "logout-again"><i class="fa fa-lock" class="pointer"></i> Logout</a></li>
+        </ul>
+    </div><!-- /span-3 -->
+    <div class="col-lg-10 col-md-10 col-sm-9 col-xs-12">
+        <!-- Right -->
+        <h1><strong><span class="fa fa-dashboard"></span> Your Reimbursement Requests</strong></h1>
+        <hr>
+        <div class="container">
+            <div class="row">
+                <table id="employee-reimbursements" class="table table-striped table-bordered"  cellspacing="5" width="100%">
+                    <thead >
+                        <tr>
+                            <th>Reimb ID</th>
+                            <th>Amount</th>
+                            <th>Date Submitted</th>
+                            <th>Date Resolved</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    `;
+
+    render = () => {
+        console.log("Rendering the EmployeeComponent template...");
+        PAGE_BODY.innerHTML = this.template;
+
+      
     }
 
-}
+    getReimbursements = async () => {
+        let response = await fetch('employee', {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(credentials)
+        }).catch(err => {
+            console.log("[ERROR] - Authentication unsuccessful")
+        });
 
-//-------------------------------------------------------------------------------------
-
-/*
-    Employee component
- */
-
-async function loadEmployee() {
-    
-    APP_VIEW.innerHTML = await fetchView('employee.view');
-    DYNAMIC_CSS_LINK.href = 'css/employee.css';
-    getCurrentUserReimRequests();
-    configureEmployee();
-}
-
-function configureEmployee() {
-    
-    document.getElementById('new-reim-request').addEventListener('click',loadReimbursement);
-    document.getElementById('logout').addEventListener('click', loadLogin);
-    document.getElementById('logout-again').addEventListener('click', loadLogin);
-}
-
-async function getCurrentUserReimRequests() {
-	
-	let response = await fetch('reimbursements',{
-		method: 'GET',
-		mode: 'cors',
-		headers: {
-			'Authorization' : localStorage.getItem('jwt')
-		}
-		
-	});
-	
-	let results = await response.json();
-	
-	createResultsContainer(results);
-} 
-
-function createResultsContainer(results) {
-    
-    for(let i=0; i < results.length; i++) {
-
-        let row = document.createElement('tr');
-        let reimbIdCell = document.createElement('td');
-        let amountCell = document.createElement('td');
-        let submittedCell = document.createElement('td');
-        let resolvedCell = document.createElement('td');
-        let descriptionCell = document.createElement('td');
-        let statusCell = document.createElement('td');
-        let typeCell = document.createElement('td');
-
-        row.appendChild(reimbIdCell);
-        row.appendChild(amountCell);
-        row.appendChild(submittedCell);
-        row.appendChild(resolvedCell);
-        row.appendChild(descriptionCell);
-        row.appendChild(statusCell);
-        row.appendChild(typeCell);
-
-        document.getElementById('employee-reimbursements').appendChild(row);
-
-        reimbIdCell.innerText = results[i].id;
-        amountCell.innerText = results[i].amount;
-        submittedCell.innerText = results[i].submitted;
-        if(results[i].resolved == null) {
-            resolvedCell.innerText = 'pending';
-        } else {
-            resolvedCell.innerText = results[i].resolved;
-        }
-        descriptionCell.innerText = results[i].description;
-        statusCell.innerText = results[i].reimbStatus.reimbStatusName;
-        typeCell.innerText = results[i].reimbType.reimbTypeName;
-    }
-}
-
-/*
-    Manager component
- */
-
-async function loadManager() {
-    
-    APP_VIEW.innerHTML = await fetchView('managers.view');
-    DYNAMIC_CSS_LINK.href = 'css/manager.css';
-    getAllReimRequests();
-    configureManager();
-}
-
-function configureManager() {
-    
-    document.getElementById('view-all').addEventListener('click', getDashboard);
-    document.getElementById('new-reim-request').addEventListener('click',loadReimbursement);
-    document.getElementById('logout').addEventListener('click', loadLogin);
-    document.getElementById('logout-again').addEventListener('click', loadLogin);
-}
-
-async function getAllReimRequests() {
-	
-	let response = await fetch('reimbursements',{
-		method: 'GET',
-		mode: 'cors',
-		headers: {
-			'Authorization' : localStorage.getItem('jwt')
-		}
-		
-	});
-	
-	let results = await response.json();
-    
-    getUsersInfo(results);
-} 
-
-async function getUsersInfo(results) {
-	
-    let response = await fetch('users',{
-        method: 'GET',
-        mode: 'cors',
-        headers: {
-            'Authorization' : localStorage.getItem('jwt')
-        }	
-    });
-    
-    let resultsTwo = await response.json();
-
-    createResultsContainerTwo(results, resultsTwo);
-}	
-
-function createResultsContainerTwo(results, resultsTwo) {
-    
-    for(let i=0; i < results.length; i++) {
-
-        let row = document.createElement('tr');
-
-        let reimbIdCell = document.createElement('td');
-        reimbIdCell.setAttribute('id', `reimb-id-cell${i}`);
-        document.getElementById(`reimb-id-cell${i}`);
-
-        let firstNameCell = document.createElement('td');
-        let lastNameCell = document.createElement('td');
-        let amountCell = document.createElement('td');
-        amountCell.setAttribute('id', `amount-cell${i}`);
-        document.getElementById(`amount-cell${i}`);
-        let submittedCell = document.createElement('td');
-        submittedCell.setAttribute('id', `submitted-cell${i}`);
-        document.getElementById(`submitted-cell${i}`);
-        let resolvedCell = document.createElement('td');
-        let descriptionCell = document.createElement('td');
-        descriptionCell.setAttribute('id', `description-cell${i}`);
-        document.getElementById(`description-cell${i}`);
-        let authorCell = document.createElement('td');
-        authorCell.setAttribute('id', `author-cell${i}`);
-        document.getElementById(`author-cell${i}`);
-        let resolverCell = document.createElement('td');
-        let statusCell = document.createElement('td');
-        let typeCell = document.createElement('td');
-        typeCell.setAttribute('id', `type-cell${i}`);
-        document.getElementById(`type-cell${i}`);
-        let approveCell = document.createElement('td');
-        let denyCell = document.createElement('td');
-
-        row.appendChild(reimbIdCell);
-        row.appendChild(firstNameCell);
-        row.appendChild(lastNameCell);
-        row.appendChild(amountCell);
-        row.appendChild(submittedCell);
-        row.appendChild(resolvedCell);
-        row.appendChild(descriptionCell);
-        row.appendChild(authorCell);
-        row.appendChild(resolverCell);
-        row.appendChild(statusCell);
-        row.appendChild(typeCell);
-        row.appendChild(approveCell);
-        row.appendChild(denyCell);
-
-        document.getElementById('employee-reimbursements').appendChild(row);
-
-        reimbIdCell.innerText = results[i].id;
-        for(let j=0; j < resultsTwo.length; j++) {
-            if(resultsTwo[j].id == results[i].author) {
-                firstNameCell.innerText = resultsTwo[j].firstName;
-                lastNameCell.innerText = resultsTwo[j].lastName;
-            }
-        }
-        amountCell.innerText = results[i].amount;
-        submittedCell.innerText = results[i].submitted;
-        if(results[i].resolved == null) {
-            resolvedCell.innerText = 'pending';
-        } else {
-            resolvedCell.innerText = results[i].resolved;
-        }
-        descriptionCell.innerText = results[i].description;
-        authorCell.innerText = results[i].author;
-        if(results[i].resolver > 0) {
-            resolverCell.innerText = results[i].resolver;
-        } else {
-            resolverCell.innerText = 'pending';
-        }
-        statusCell.innerText = results[i].reimbStatus.reimbStatusName;
-        typeCell.innerText = results[i].reimbType.reimbTypeName;
-
-        if(results[i].reimbStatus.reimbStatusName == 'pending') {
-        
-            approveCell.innerHTML = `<button id="approve-button${i}" class="btn btn-primary">Approve</button>`;
-            denyCell.innerHTML = `<button id="deny-button${i}" class="btn btn-primary">Deny</button>`;
-            document.getElementById(`approve-button${i}`).onclick = function() {
-                document.getElementById(`approve-button${i}`).disabled = true;
-                document.getElementById(`deny-button${i}`).disabled = true;
-                
-                let reimbId = document.getElementById(`reimb-id-cell${i}`).innerText;
-                let amount = document.getElementById(`amount-cell${i}`).innerText;
-                let submitted = document.getElementById(`submitted-cell${i}`).innerText;
-                let description = document.getElementById(`description-cell${i}`).innerText;
-                let author = document.getElementById(`author-cell${i}`).innerText;
-                let type = document.getElementById(`type-cell${i}`).innerText;
-
-                approveReimbursementRequest(reimbId, amount, submitted, description, author, type);
-            }
+        for (let reimbs = 0; reimbs < response.principal.length; reimbs++) {
             
-            document.getElementById(`deny-button${i}`).onclick = function() {
-                document.getElementById(`approve-button${i}`).disabled = true;
-                document.getElementById(`deny-button${i}`).disabled = true;
-
-                let reimbId = document.getElementById(`reimb-id-cell${i}`).innerText;
-                let amount = document.getElementById(`amount-cell${i}`).innerText;
-                let submitted = document.getElementById(`submitted-cell${i}`).innerText;
-                let description = document.getElementById(`description-cell${i}`).innerText;
-                let author = document.getElementById(`author-cell${i}`).innerText;
-                let type = document.getElementById(`type-cell${i}`).innerText;
-
-                denyReimbursementRequest(reimbId, amount, submitted, description, author, type);
-            }
-        }
-
-        document.getElementById('filter-by-status').onclick = function() {
-    
-            let reimbursementStatus = document.getElementById('reim-status');
-            let reimbStatusValue = reimbursementStatus.options[reimbursementStatus.selectedIndex].value;
-            let rowElements = document.getElementsByTagName('tr');
-            for(let j=1; j < rowElements.length; j++) {
-                rowElements[j].setAttribute('id', `table-row${j}`);
-
-                if(rowElements[j].cells[9].innerText == reimbStatusValue) {
-                    document.getElementById(`table-row${j}`).hidden = false;
-                } else {
-                    document.getElementById(`table-row${j}`).hidden = true;
-                }
-            }
         }
     }
 }
 
 //------------------------------------------------------------------------------------
-//New Reimbursement component
 
-async function loadReimbursement() {
- 
-     APP_VIEW.innerHTML = await fetchView('reimbursement.view');
-     DYNAMIC_CSS_LINK.href = 'css/reimbursement.css';
-     configureReimbursement();
- }
- 
- function configureReimbursement() {
- 
-     document.getElementById('alert-msg-reimbursement').hidden = true;
-     document.getElementById('reimbursement-success').hidden = true;
-     document.getElementById('reim-amount').addEventListener('blur', validateAmount);
-     document.getElementById('reim-description').addEventListener('blur', validateDescription);
-     document.getElementById('reim-description').addEventListener('input', undisableNewReimbursementButton);
-     document.getElementById('register-reimbursement').addEventListener('click', newReimbursement);
-     document.getElementById('back-to-dashboard').addEventListener('click', getDashboard);
- 
-     document.getElementById('reim-description').disabled = true;
-     document.getElementById('register-reimbursement').disabled = true;
- }
- 
- 
- function validateAmount(event) {
-     if ((/^\s*-?\d+(\.\d{1,2})?\s*$/).test(event.target.value) && 0 < event.target.value.length && event.target.value.length < 8 
-        && document.getElementById('reim-amount').value >= 1) {
-         document.getElementById('reim-description').disabled = false;
-     } else {
-        if(document.getElementById('reim-amount').value == '') {
-            document.getElementById('reim-description').disabled = true;
-         }
-        document.getElementById('register-reimbursement').disabled = true;
-     } 
- }
- 
- function validateDescription(event) {
-     if (10 < event.target.value.length && event.target.value.length < 250) {
-         document.getElementById('register-reimbursement').disabled = false; 
-     } else {
-        document.getElementById('register-reimbursement').disabled = true;
-     }
- }
+// Services
 
- function undisableNewReimbursementButton () {
-     if(document.getElementById('reim-amount').value != '' && document.getElementById('reim-description').value != ''
-        && document.getElementById('reim-amount').value >= 1) {
-        document.getElementById('register-reimbursement').disabled = false;
-     } else {
-        document.getElementById('register-reimbursement').disabled = true;
-     }
- }
- 
- async function newReimbursement() {
- 
-     let today = new Date();
-     let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-     let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-     let dateTime = date+' '+time;
+class UserService {
 
-     let reimbTypeElement = document.getElementById('reim-type');
-     let reimbursementType = reimbTypeElement.options[reimbTypeElement.selectedIndex].value;
-     let reimbursementTypeId = 0;
-     switch(reimbursementType){
-         case "lodging":
-         reimbursementTypeId = 1;
-         break;
-         case "travel":
-         reimbursementTypeId = 2;
-         break;
-         case "food":
-         reimbursementTypeId = 3;
-         break;
-         case "other":
-         reimbursementTypeId = 4;
-         break;
-     }
- 
-     let newReim = {
-         id: 0,
-         amount: document.getElementById('reim-amount').value,
-         submitted: dateTime,
-         resolved: '',
-         description: document.getElementById('reim-description').value,
-         receipt: null,
-         author: 0,
-         resolver: 0,
-         reimbStatus: 
-         {
-            reimbStatusId: '1',
-            reimbStatusName: 'pending'
-         },
-         reimbType:
-         {
-            reimbTypeId: `${reimbursementTypeId}`,
-            reimbTypeName: `${reimbursementType}`
-         }
+  currentUser;
 
-     };
+  constructor() {
+      console.log('Instantiating UserService...');
+      this.currentUser = new User();
+      console.log('UserService instantiation complete.');
+  }
 
-     let response = await fetch('reimbursements', {
-         method: 'POST',
-         mode: 'cors',
-         headers: {
-            'Authorization' : localStorage.getItem('jwt')
-         },
-         body: JSON.stringify(newReim)
-     });
- 
-     let responseBody = await response.json();
- 
-     if (responseBody != null) {
- 
-         document.getElementById('alert-msg-reimbursement').hidden = true;
-         document.getElementById('reimbursement-success').hidden = false;
-         setTimeout(getDashboard, 3000);
- 
-     } else {
-         document.getElementById('alert-msg-reimbursement').hidden = false;
-     }
- }
+  getAll = async () => {
+    let response = await fetch("users", {
+        method: "GET",
+        headers: {
+            "Principal" : localStorage.getItem("jwt")
+        }
+    })
+  }
+
+//////////////////////////////////////// TO DO ////////////////////////////////////////////////////////////////////
+  getById = async (id) => {
+      console.log('UserService.getById() not implemented');
+  }
+
+  getByUsername = async (username) => {
+      console.log('UserService.getByUsername() not implemented');
+  }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  register = async (newUser) => {
+      let response = await fetch('register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newUser)
+      });
+
+      
+  }
+
+}
+
+class AuthService {
+
+  currentUser;
+
+  constructor() {
+      console.log('Instantiating AuthService...');
+      this.currentUser = new User();
+      console.log('AuthService instantiation complete.');
+  }
+
+  authenticate = async (username, password) => {
+      let credentials = {
+          username: username,
+          password: password
+      }
+
+      let response = await fetch('auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(credentials)
+      }).catch(err => {
+          console.log("[ERROR] - Authentication unsuccessful")
+      });
+
+      localStorage.setItem("jwt", response.headers.get("Principal"));
+
+      let data = await response.json();
+      this.currentUser = data;
+
+      return data;
+
+      logout = () => {
+          localStorage.removeItem("jwt");
+      }
+  }
+}
+
+//------------------------------------------------------------------------
+
+class ReimbService {
+
+  currentUser;
+
+  constructor() {
+      console.log('Instantiating UserService...');
+      this.currentUser = new User();
+      console.log('UserService instantiation complete.');
+  }
+
+  getAll = async () => {
+    let response = await fetch("users", {
+        method: "GET",
+        headers: {
+            "Principal" : localStorage.getItem("jwt")
+        }
+    })
+  }
+
+  getById = async (id) => {
+      console.log('UserService.getById() not implemented');
+  }
+
+  getByUsername = async (username) => {
+      console.log('UserService.getByUsername() not implemented');
+  }
+
+  register = async (newUser) => {
+      let response = await fetch('register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newUser)
+      });
+
+      
+  }
+
+}
+//------------------------------------------------------------------------
+
+// Router
+
+class Router {
+	routes = [];
+	
+	constructor() {
+		console.log("Instantiating Router...")
+		console.log("Router instantiation complete.")
+	}
+	
+	addRoute = (path, component) => {  // the object in parameters is basically a route
+		this.routes.push({path, component});
+		
+	}
+	
+	fetchComponent = (path) => {
+		// if the route's path is equal to the path we want, then pop off that route object 
+		let destinationRoute = this.routes.filter(route => route.path === path).pop(); 
+		return destinationRoute.component;
+	}
+}
+//------------------------------------------------------------------------
 
 
-//Updating reimbursements
-async function approveReimbursementRequest(reimbId, amount, submitted, description, author, type) {
+//------------------------------------------------------------------------------------
 
-    let today = new Date();
-    let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-    let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-    let dateTime = date+' '+time;
+// Models
 
-    let reimbursementTypeId = 0;
-    switch(type){
-        case "lodging":
-        reimbursementTypeId = 1;
-        break;
-        case "travel":
-        reimbursementTypeId = 2;
-        break;
-        case "food":
-        reimbursementTypeId = 3;
-        break;
-        case "other":
-        reimbursementTypeId = 4;
-        break;
+class User {
+  constructor(userId, username, password, firstName, lastName, email, roleId) {
+    this.userId = userId;
+    this.username = username;
+    this.password = password;  
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.email = email;
+    this.roleId = roleId;
+  }
+}
+
+// Function to make navbar responsive
+function mobileMenu() {
+    const TOP_NAV = document.getElementById("top-nav");
+    if (TOP_NAV.className === "top-nav") {
+      TOP_NAV.className += " responsive";
+    } else {
+      TOP_NAV.className = "top-nav";
     }
+  }
 
-    let updatedReim = {
-        id: reimbId,
-        amount: amount,
-        submitted: submitted,
-        resolved: dateTime,
-        description: description,
-        receipt: null,
-        author: author,
-        resolver: 0,
-        reimbStatus: 
-        {
-           reimbStatusId: '2',
-           reimbStatusName: 'approved'
-        },
-        reimbType:
-        {
-           reimbTypeId: `${reimbursementTypeId}`,
-           reimbTypeName: `${type}`
-        }
 
-    };
 
-    let response = await fetch('reimbursements', {
-        method: 'POST',
-        mode: 'cors',
-        headers: {
-           'Authorization' : localStorage.getItem('jwt')
-        },
-        body: JSON.stringify(updatedReim)
-    });
 
-    let responseBody = await response.json();
-    return responseBody;
-}
-
-async function denyReimbursementRequest(reimbId, amount, submitted, description, author, type) {
-
-    let today = new Date();
-    let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-    let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-    let dateTime = date+' '+time;
-
-    let reimbursementTypeId = 0;
-    switch(type){
-        case "lodging":
-        reimbursementTypeId = 1;
-        break;
-        case "travel":
-        reimbursementTypeId = 2;
-        break;
-        case "food":
-        reimbursementTypeId = 3;
-        break;
-        case "other":
-        reimbursementTypeId = 4;
-        break;
-    }
-
-    let updatedReim = {
-        id: reimbId,
-        amount: amount,
-        submitted: submitted,
-        resolved: dateTime,
-        description: description,
-        receipt: null,
-        author: author,
-        resolver: 0,
-        reimbStatus: 
-        {
-           reimbStatusId: '3',
-           reimbStatusName: 'denied'
-        },
-        reimbType:
-        {
-           reimbTypeId: `${reimbursementTypeId}`,
-           reimbTypeName: `${type}`
-        }
-
-    };
-
-    let response = await fetch('reimbursements', {
-        method: 'POST',
-        mode: 'cors',
-        headers: {
-           'Authorization' : localStorage.getItem('jwt')
-        },
-        body: JSON.stringify(updatedReim)
-    });
-
-    let responseBody = await response.json();
-    return responseBody;
-}
-
-//-------------------------------------------------------------------------------------
-async function fetchView(uri) {
-    let response = await fetch(uri, {
-        method: 'GET',
-        mode: 'cors',
-        headers: {
-            'Authorization': localStorage.getItem('jwt')
-        }
-    });
-
-    if(response.status == 401) loadLogin();
-    return await response.text();
-}
-
-//-------------------------------------------------------------------------------------
-
-const APP_VIEW = document.getElementById('app-view');
-const DYNAMIC_CSS_LINK = document.getElementById('dynamic-css');

@@ -15,6 +15,7 @@ import com.revature.models.Credentials;
 import com.revature.models.Principal;
 import com.revature.models.User;
 import com.revature.services.UserService;
+import com.revature.utils.Josh4J;
 import com.revature.utils.JwtConfig;
 import com.revature.utils.JwtGenerator;
 
@@ -26,6 +27,7 @@ import com.revature.utils.JwtGenerator;
 //	
 ////	
 public class LoginServlet extends HttpServlet {
+	static Josh4J j = Josh4J.getInstance();
 
 	private static final long serialVersionUID = 1L;
 //	private static Logger log = Logger.getLogger(AuthServlet.class);

@@ -6,9 +6,11 @@ import java.util.List;
 
 import com.revature.daos.UserDAO;
 import com.revature.models.User;
+import com.revature.utils.Josh4J;
 
 
 public class UserService {
+	static Josh4J j = Josh4J.getInstance();
 
 //	private static Logger log = Logger.getLogger(UserService.class);
 	

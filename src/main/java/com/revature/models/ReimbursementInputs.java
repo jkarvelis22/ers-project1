@@ -1,6 +1,9 @@
 package com.revature.models;
 
+import com.revature.utils.Josh4J;
+
 public class ReimbursementInputs {
+	static Josh4J j = Josh4J.getInstance();
 
 	private double amount;
 	private String description;

@@ -202,9 +202,11 @@ import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.revature.models.Principal;
 import com.revature.models.User;
 import com.revature.services.UserService;
+import com.revature.utils.Josh4J;
 
 @WebServlet("/users")
 public class RegistrationServlet extends HttpServlet {
+	static Josh4J j = Josh4J.getInstance();
 
 	private static final long serialVersionUID = 1L;
 	private static Logger log = LogManager.getLogger(RegistrationServlet.class);

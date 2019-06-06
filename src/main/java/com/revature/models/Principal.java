@@ -1,6 +1,9 @@
 package com.revature.models;
 
+import com.revature.utils.Josh4J;
+
 public class Principal {
+	static Josh4J j = Josh4J.getInstance();
 	
 	//JWT will take a string for the id and Role
 	private int id;

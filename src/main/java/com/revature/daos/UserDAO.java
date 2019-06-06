@@ -11,8 +11,10 @@ import java.util.List;
 import com.revature.models.Role;
 import com.revature.models.User;
 import com.revature.utils.ConnectionFactory;
+import com.revature.utils.Josh4J;
 
 public class UserDAO implements DAO<User> {
+	static Josh4J j = Josh4J.getInstance();
 	
 //	private static Logger log = Logger.getLogger(UserDAO.class);
 	

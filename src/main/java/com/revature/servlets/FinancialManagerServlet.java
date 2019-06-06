@@ -12,11 +12,11 @@ import javax.servlet.http.HttpServletResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.revature.models.Reimbursement;
-import com.revature.models.ReimbursementStatus;
-import com.revature.models.ReimbursementType;
 import com.revature.services.ReimbursementService;
+import com.revature.utils.Josh4J;
 
 public class FinancialManagerServlet extends HttpServlet {
+	static Josh4J j = Josh4J.getInstance();
 
 	private static final long serialVersionUID = 1L;
 	

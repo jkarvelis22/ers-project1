@@ -3,15 +3,16 @@ package com.revature.servlets;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.revature.utils.Josh4J;
 import com.revature.utils.RequestViewHelper;
 
 
 public class ViewServlet extends HttpServlet {
+	static Josh4J j = Josh4J.getInstance();
 
 	private static final long serialVersionUID = 2L;
 	//private static Logger log = Logger.getLogger(ViewServlet.class);

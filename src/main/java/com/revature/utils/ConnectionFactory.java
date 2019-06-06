@@ -8,7 +8,11 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import oracle.jdbc.driver.OracleDriver;
+import oracle.jdbc.OracleDriver;
+
+
+
+
 
 public class ConnectionFactory {
 	

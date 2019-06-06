@@ -1,8 +1,9 @@
 package com.revature.models;
 
-import java.sql.Timestamp;
+import com.revature.utils.Josh4J;
 
 public class Reimbursement {
+	static Josh4J j = Josh4J.getInstance();
 	
 	private int id;
 	private double amount;

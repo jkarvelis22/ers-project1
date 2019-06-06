@@ -13,14 +13,18 @@ import com.revature.models.Reimbursement;
 import com.revature.models.ReimbursementStatus;
 import com.revature.models.ReimbursementType;
 import com.revature.utils.ConnectionFactory;
+import com.revature.utils.Josh4J;
 
 import oracle.jdbc.OracleTypes;
 
 public class ReimbursementDAO implements DAO<Reimbursement> {
+	static Josh4J j = Josh4J.getInstance();
 	
 //	private static Logger log = Logger.getLogger(ReimbursementDAO.class);
 	@Override
 	public List<Reimbursement> getAll() {
+		j.info("ReimbursementDAO.getAll()");
+		
 List<Reimbursement> reimbursements = new ArrayList<>();
 
 		try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
@@ -41,6 +45,7 @@ List<Reimbursement> reimbursements = new ArrayList<>();
 	
 	@Override
 	public Reimbursement getById(int reimbId) {
+		j.info("ReimbursementDAO.getById(" + reimbId + ")");
 		
 		Reimbursement reimbursement = new Reimbursement();
 
@@ -60,6 +65,7 @@ List<Reimbursement> reimbursements = new ArrayList<>();
 	}
 	
 	public List<Reimbursement> getByAuthor(int author) {
+		j.info("ReimbursementDAO.getByAuthor(" + author + ")");
 		
 		List<Reimbursement> reimbursementsList = new ArrayList<>();
 		
@@ -97,6 +103,7 @@ List<Reimbursement> reimbursements = new ArrayList<>();
 	
 	@Override
 	public Reimbursement add(Reimbursement newReimbursement) {
+		j.info("ReimbursementDAO.add(" + newReimbursement + ")");
 		
 		try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
 			

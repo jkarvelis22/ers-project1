@@ -1,6 +1,9 @@
 package com.revature.models;
 
+import com.revature.utils.Josh4J;
+
 public class Role {
+	static Josh4J j = Josh4J.getInstance();
 	
 	private int roleId;
 	private String roleName;
