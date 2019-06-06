@@ -10,7 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.revature.models.Reimbursement;
+import com.revature.models.ReimbursementStatus;
+import com.revature.models.ReimbursementType;
 import com.revature.services.ReimbursementService;
 
 public class FinancialManagerServlet extends HttpServlet {
@@ -30,31 +33,82 @@ public class FinancialManagerServlet extends HttpServlet {
 		// principle object would be a roleId and userId
 		// create a new user object and populate with the two values
 	}
+
+
 	
+//	@Override
+//	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+//		// update the selected ticket to approved/denied
+//		ObjectMapper mapper = new ObjectMapper();
+//		Reimbursement update = null;
+//		boolean updateStatus = false;
+//		
+//		try {
+//			
+//			update = mapper.readValue(request.getInputStream(), Reimbursement.class);
+//			
+//			if (update == null) {
+//				response.setStatus(400);
+//				return;
+//			}
+//			
+//			updateStatus = rs.update(update);
+//			
+//			if (updateStatus == false) {
+//				response.setStatus(400);
+//				return;
+//			}
+//			
+//		} catch (Exception e) {
+//			response.setStatus(500);
+//			System.out.println(e.getMessage());
+//		}
+//		
+//	}
+//}
+
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		// update the selected ticket to approved/denied
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    	System.out.println("IN THE DO POST");
+		
 		ObjectMapper mapper = new ObjectMapper();
-		Reimbursement update = null;
-		boolean updateStatus = false;
-		System.out.println("Start of doPost");
 		
 		try {
-			
-			update = mapper.readValue(request.getInputStream(), Reimbursement.class);
-			System.out.println("MAPPING UPDATE");
-			if (update == null) {
-				response.setStatus(400);
+			System.out.println("IN THE TRY BLOCK");
+			Reimbursement val = mapper.readValue(req.getInputStream(), Reimbursement.class);
+			System.out.println(val);
+			System.out.println("MAPPER VALUE");
+			if(val == null) {
+				System.out.println("JUMMPED INTO THE IF STATEMENT");
+			//	log.info("input on update is null");
+				resp.setStatus(400);
+				System.out.println("400 STATUS");
 				return;
+				
 			}
+			Reimbursement reimb = new Reimbursement();
+			System.out.println("PREPARING TO EXECUTE THE UPDATE");
+			reimb = rs.update(val);
 			
-			System.out.println("PASSED NULL CHECK");
-					
+			System.out.println("YOU SCREWED THIS ONE UP");
+			
+			String reimbJson = mapper.writeValueAsString(reimb);
+			PrintWriter out = resp.getWriter();
+			System.out.println("JSON MAPPER");
+			out.write(reimbJson);
+			
+		} catch (MismatchedInputException mie) {
+			System.out.println("WRONG INPUTS");
+			mie.printStackTrace();
+			System.out.println(mie.getMessage());
+	//		log.error(mie.getMessage());
+			resp.setStatus(400);
+			return;
 		} catch (Exception e) {
-			response.setStatus(500);
+			System.out.println("CAUGHT THE EXCEPTION");
 			System.out.println(e.getMessage());
-			System.out.println("500 IS NO GOOD");
+			resp.setStatus(500);
+			return;
 		}
-		
 	}
 }

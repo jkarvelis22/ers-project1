@@ -204,10 +204,10 @@ import com.revature.models.User;
 import com.revature.services.UserService;
 
 @WebServlet("/users")
-public class UserServlet extends HttpServlet {
+public class RegistrationServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-	private static Logger log = LogManager.getLogger(UserServlet.class);
+	private static Logger log = LogManager.getLogger(RegistrationServlet.class);
 	
 	private final UserService userService = new UserService();
 

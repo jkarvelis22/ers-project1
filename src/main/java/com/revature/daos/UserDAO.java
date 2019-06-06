@@ -31,7 +31,7 @@ public class UserDAO implements DAO<User> {
 			System.out.println(user);
 			
 		} catch (SQLException e) {
-			System.out.println("CAUGHT THE EXECPTION");
+			System.out.println("CAUGHT THE EXCEPTION");
 //			log.error(e.getMessage());
 		}
 		

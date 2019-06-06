@@ -1,5 +1,7 @@
 package com.revature.models;
 
+import java.sql.Timestamp;
+
 public class Reimbursement {
 	
 	private int id;
@@ -15,6 +17,15 @@ public class Reimbursement {
 	
 	public Reimbursement() {
 		super();
+	}
+	
+	public Reimbursement(double amount, String description, int author, int typeId, ReimbursementType reimbType) {
+		super();
+		this.amount = amount;
+		this.description = description;
+		this.author = author;
+		this.reimbType = reimbType;
+	
 	}
 
 	
@@ -131,7 +142,6 @@ public class Reimbursement {
 		return result;
 	}
 
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -181,7 +191,6 @@ public class Reimbursement {
 			return false;
 		return true;
 	}
-
 
 	@Override
 	public String toString() {

@@ -136,6 +136,51 @@ List<Reimbursement> reimbursements = new ArrayList<>();
 		return newReimbursement;
 	}
 	
+	@Override
+	public Reimbursement update(Reimbursement updatedReimbursement) {
+		
+		try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
+			
+			conn.setAutoCommit(false);
+			
+			String sql = "UPDATE ers_reimbursement SET reimb_amount = ?, reimb_resolved = ?, reimb_description = ?, reimb_resolver = ?, reimb_status_id = ?, reimb_type_id = ? WHERE reimb_id = ?";
+			
+			
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			System.out.println(updatedReimbursement.getAmount());
+			pstmt.setDouble(1, updatedReimbursement.getAmount());
+			
+			System.out.println(updatedReimbursement.getResolved());
+			pstmt.setString(2, updatedReimbursement.getResolved());
+			
+			System.out.println(updatedReimbursement.getDescription());
+			pstmt.setString(3, updatedReimbursement.getDescription());
+			
+			
+			System.out.println(updatedReimbursement.getResolver());
+			pstmt.setInt(4, updatedReimbursement.getResolver());
+			
+			System.out.println(updatedReimbursement.getReimbStatus().getReimbStatusId());
+			pstmt.setInt(5, updatedReimbursement.getReimbStatus().getReimbStatusId());
+			
+			System.out.println(updatedReimbursement.getReimbType().getReimbTypeId());
+			pstmt.setInt(6, updatedReimbursement.getReimbType().getReimbTypeId());
+			
+			System.out.println(updatedReimbursement.getId());
+			pstmt.setInt(7, updatedReimbursement.getId());
+			
+			pstmt.executeUpdate();
+				conn.commit();
+				return updatedReimbursement;
+			
+			} catch (SQLException e) {
+				System.out.println(e.getMessage());
+	//		log.error(e.getMessage());
+		}
+		
+		return null;
+	}
+	
 	private List<Reimbursement> mapResultSet(ResultSet rs) throws SQLException {
 		
 		List<Reimbursement> reimbursements = new ArrayList<>();
@@ -163,41 +208,7 @@ List<Reimbursement> reimbursements = new ArrayList<>();
 		return null;
 	}
 
-	@Override
-	public Reimbursement update(Reimbursement updatedObj) {
 	
-		        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-
-		            conn.setAutoCommit(false);
-
-		            String sql = "UPDATE ers_reimbursement SET reimb_resolved = ?, reimb_resolver = ?, reimb_status_id = ? where reimb_id =?";
-
-		            PreparedStatement pstmt = conn.prepareStatement(sql);
-		            System.out.println("WE'RE IN THE STATEMENT");
-		            pstmt.setString(1, updatedObj.getResolved());
-		            pstmt.setInt(2, updatedObj.getResolver());
-		            pstmt.setInt(3, updatedObj.getReimbStatus().getReimbStatusId());
-		            pstmt.setInt(4, updatedObj.getId());
-		            System.out.println("POPULATED THE SQL STATEMENT");
-		            
-		            int rowsUpdated = pstmt.executeUpdate();
-		            System.out.println("EXECUTE THE UPDATE");
-
-		            if (rowsUpdated != 0) {
-		            	System.out.println("CHECKING ROWS UPDATED");
-		                conn.commit();
-		                System.out.println("COMMITTED THE CHANGES");
-		                return updatedObj;
-		            }
-
-		        } catch (SQLException e) {
-		            e.getMessage();
-		        }
-
-		        return null;
-		    }
-
-
 	@Override
 	public boolean delete(int id) {
 		// TODO Auto-generated method stub
