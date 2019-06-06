@@ -41,7 +41,7 @@ public class LoginServlet extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		
+		j.info("LoginServlet.doPost(" + request + "," + response + ")");
 
 //		ObjectMapper mapper = new ObjectMapper();
 //		String[] credentials = null;

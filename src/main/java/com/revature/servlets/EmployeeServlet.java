@@ -26,7 +26,7 @@ import com.revature.utils.Josh4J;
 		
 		@Override
 		protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-			
+			j.info("EmployeeServlet.doGet(" + request + "," + response + ")");
 			PrintWriter writer = response.getWriter();
 			User user = new User();
 			user.setId(5);
@@ -40,7 +40,7 @@ import com.revature.utils.Josh4J;
 		
 		@Override
 	    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-			
+			j.info("EmployeeServlet.doPost(" + req + "," + resp + ")");
 			System.out.println("ENTERED THE DOPOst");
 			Reimbursement reimb = null;
 			ObjectMapper mapper = new ObjectMapper();

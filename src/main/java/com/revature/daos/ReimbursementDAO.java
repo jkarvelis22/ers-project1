@@ -18,7 +18,7 @@ import com.revature.utils.Josh4J;
 import oracle.jdbc.OracleTypes;
 
 public class ReimbursementDAO implements DAO<Reimbursement> {
-	static Josh4J j = Josh4J.getInstance();
+	Josh4J j = Josh4J.getInstance();
 	
 //	private static Logger log = Logger.getLogger(ReimbursementDAO.class);
 	@Override
@@ -28,7 +28,7 @@ public class ReimbursementDAO implements DAO<Reimbursement> {
 List<Reimbursement> reimbursements = new ArrayList<>();
 
 		try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-
+			j.info("ReimbursementDAO.getAll() : Variable == False : Try catch block entered.");
 			CallableStatement cstmt = conn.prepareCall("{CALL get_all_reimbursements(?)}");
 			cstmt.registerOutParameter(1, OracleTypes.CURSOR);
 			cstmt.execute();
@@ -50,7 +50,8 @@ List<Reimbursement> reimbursements = new ArrayList<>();
 		Reimbursement reimbursement = new Reimbursement();
 
 		try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-
+			
+			j.info("ReimbursementDAO.getById(" + reimbId + ") : Variable == False : Try catch block entered.");
 			PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM ers_reimbursement WHERE reimb_id = ?");
 			pstmt.setInt(1, reimbId);
 
@@ -70,7 +71,7 @@ List<Reimbursement> reimbursements = new ArrayList<>();
 		List<Reimbursement> reimbursementsList = new ArrayList<>();
 		
 		try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
-			
+			j.info("ReimbursementDAO(" + author + ") : Variable == False : Try catch block entered.");
 			String sql = "SELECT * FROM ers_reimbursement FULL OUTER JOIN ers_reimbursement_status USING (reimb_status_id) FULL OUTER JOIN ers_reimbursement_type USING (reimb_type_id) JOIN ers_users ON ers_reimbursement.reimb_author = ers_users.ers_users_id WHERE reimb_author = ? ORDER BY reimb_id DESC";
 			
 			PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -106,7 +107,7 @@ List<Reimbursement> reimbursements = new ArrayList<>();
 		j.info("ReimbursementDAO.add(" + newReimbursement + ")");
 		
 		try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
-			
+			j.info("ReimbursementDAO.add(" + newReimbursement + ") : Variable == False : Try catch block entered.");
 			conn.setAutoCommit(false);
 			
 			String sql = "INSERT INTO ers_reimbursement VALUES (0, ?, ?, null, ?, null, ?, null, 1, ?)";
@@ -125,7 +126,7 @@ List<Reimbursement> reimbursements = new ArrayList<>();
 			ResultSet rs = pstmt.getGeneratedKeys();
 			
 			if(rowsInserted != 0) {
-				
+				j.info("ReimbursementDAO.add(" + newReimbursement + ") : Variable == False : try catch block entered.");
 				while(rs.next()) {
 					newReimbursement.setId(rs.getInt(1));
 				}
@@ -139,15 +140,16 @@ List<Reimbursement> reimbursements = new ArrayList<>();
 		}
 		
 		if(newReimbursement.getId() == 0) return null;
-		
+		j.info("ReimbursementDAO.add(" + newReimbursement + ") : Variable == False : Else block entered.");
 		return newReimbursement;
 	}
 	
 	@Override
 	public Reimbursement update(Reimbursement updatedReimbursement) {
+		j.info("ReimbursementDAO.update(" + updatedReimbursement + ")");
 		
 		try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
-			
+			j.info("ReimbursementDAO.update(" + updatedReimbursement + ") : Variable == False : Else block entered.");
 			conn.setAutoCommit(false);
 			
 			String sql = "UPDATE ers_reimbursement SET reimb_amount = ?, reimb_resolved = ?, reimb_description = ?, reimb_resolver = ?, reimb_status_id = ?, reimb_type_id = ? WHERE reimb_id = ?";
@@ -189,7 +191,7 @@ List<Reimbursement> reimbursements = new ArrayList<>();
 	}
 	
 	private List<Reimbursement> mapResultSet(ResultSet rs) throws SQLException {
-		
+		j.info("ReimbursementDAO.mapResultSet(" + rs + ")");
 		List<Reimbursement> reimbursements = new ArrayList<>();
 		
 		while(rs.next()) {

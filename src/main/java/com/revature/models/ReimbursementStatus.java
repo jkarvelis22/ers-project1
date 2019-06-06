@@ -17,15 +17,20 @@ public class ReimbursementStatus {
 		
 		switch(reimbStatusId) {
 		case 1:
+			j.info("ReimbursementStatus(" + reimbStatusId + ") : Variable == False :switch casek entered.");
 			this.reimbStatusName = "pending"; break;
-		case 2:
+			case 2:
+				j.info("ReimbursementStatus(" + reimbStatusId + ") : Variable == False :switch casek entered.");
 			this.reimbStatusName = "approved"; break;
 		case 3:
+			j.info("ReimbursementStatus(" + reimbStatusId + ") : Variable == False :switch casek entered.");
 			this.reimbStatusName = "denied"; break;
 		default:
+			j.info("ReimbursementStatus(" + reimbStatusId + ") : Variable == False :switch casek entered.");
 			this.reimbStatusName = null;
 		}
 	}
+
 	
 	public ReimbursementStatus(String reimbStatusName) {
 		super();
@@ -33,12 +38,16 @@ public class ReimbursementStatus {
 		
 		switch(reimbStatusName) {
 		case "pending":
+			j.info("ReimbursementStatus(" + reimbStatusName + ") : Variable == False :switch case entered.");
 			this.reimbStatusId = 1; break;
 		case "approved":
+			j.info("ReimbursementStatus(" + reimbStatusName + ") : Variable == False :switch case entered.");
 			this.reimbStatusId = 2; break;
 		case "denied":
+			j.info("ReimbursementStatus(" + reimbStatusName + ") : Variable == False :switch case entered.");
 			this.reimbStatusId = 3; break;
 		default:
+			j.info("ReimbursementStatus(" + reimbStatusName + ") : Variable == False :switch case entered.");
 			this.reimbStatusId = 1;
 		}
 	}

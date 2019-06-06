@@ -17,10 +17,13 @@ public class Role {
 		
 		switch(roleId) {
 		case 1:
+			j.info("Role(" + roleId + ") : Variable == False :switch case entered.");
 			this.roleName = "manager"; break;
 		case 2:
+			j.info("Role(" + roleId + ") : Variable == False :switch case entered.");
 			this.roleName = "employee"; break;
 		default:
+			j.info("Role(" + roleId + ") : Variable == False :switch case entered.");
 			this.roleName = null;
 		}
 	}

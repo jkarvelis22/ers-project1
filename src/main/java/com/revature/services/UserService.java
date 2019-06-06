@@ -17,19 +17,22 @@ public class UserService {
 	private UserDAO userDao = new UserDAO();
 	
 	public List<User> getAll() {
+		j.info("UserService.getAll()");
 		return userDao.getAll();
 	}
 
 	public User getById(int userId) {
+		j.info("UserService.getById(" + userId + ")");
 		return userDao.getById(userId);
 	}
 
 	public User getByUsername(String username) {
+		j.info("UserService.getByUsername(" + username + ")");
 		return userDao.getByUsername(username);
 	}
 
 	public User getByCredentials(String username, String password) {
-
+		j.info("UserService.getByCredentials(" + username + "," + password + ")");
 		User user = null;
 		
 		// Verify that neither of the credentials are empty string
@@ -45,6 +48,7 @@ public class UserService {
 	}
 	
 	public User add(User newUser) {
+		j.info("UserService.add(" + newUser + ")");
 
 		// Verify that there are no empty fields
 		if (newUser.getUsername().equals("") || newUser.getPassword().equals("") || newUser.getFirstName().equals("")

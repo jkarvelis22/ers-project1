@@ -243,6 +243,8 @@ public class RegistrationServlet extends HttpServlet {
 		
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		j.info("Registration.doGet(" + request + "," + response + ")");
+		
 		response.setContentType("application/json");
 		Principal principal = (Principal) request.getAttribute("principal");
 		PrintWriter writer = response.getWriter();
@@ -268,7 +270,7 @@ public class RegistrationServlet extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		
+		j.info("RegistrationServlet.doPost(" + request + "," + response + ")");
 		ObjectMapper mapper = new ObjectMapper();
 		
 		User newUser = null;

@@ -17,14 +17,19 @@ public class ReimbursementType {
 		
 		switch(reimbTypeId) {
 		case 1:
+			j.info("ReimbursementType(" + reimbTypeId + ") : Variable == False :switch case entered.");
 			this.reimbTypeName = "lodging"; break;
 		case 2:
+			j.info("ReimbursementType(" + reimbTypeId + ") : Variable == False :switch case entered.");
 			this.reimbTypeName = "travel"; break;
 		case 3:
+			j.info("ReimbursementType(" + reimbTypeId + ") : Variable == False :switch case entered.");
 			this.reimbTypeName = "food"; break;
 		case 4:
+			j.info("ReimbursementType(" + reimbTypeId + ") : Variable == False :switch case entered.");
 			this.reimbTypeName = "other"; break;
 		default:
+			j.info("ReimbursementType(" + reimbTypeId + ") : Variable == False :switch case entered.");
 			this.reimbTypeName = null;
 		}
 	}
@@ -35,14 +40,19 @@ public class ReimbursementType {
 		
 		switch(reimbTypeName) {
 		case "lodging":
+			j.info("ReimbursementType(" + reimbTypeName + ") : Variable == False :switch case entered.");
 			this.reimbTypeId = 1; break;
 		case "travel":
+			j.info("ReimbursementType(" + reimbTypeName + ") : Variable == False :switch case entered.");
 			this.reimbTypeId = 2; break;
 		case "food":
+			j.info("ReimbursementType(" + reimbTypeName + ") : Variable == False :switch case entered.");
 			this.reimbTypeId = 3; break;
 		case "other":
+			j.info("ReimbursementType(" + reimbTypeName + ") : Variable == False :switch case entered.");
 			this.reimbTypeId = 4; break;
 		default:
+			j.info("ReimbursementType(" + reimbTypeName + ") : Variable == False :switch case entered.");
 			this.reimbTypeId = 4;
 		}
 	}

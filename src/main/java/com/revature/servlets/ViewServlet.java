@@ -19,6 +19,7 @@ public class ViewServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+		j.info("ViewServlet.doGet(" + req + "," + resp + ")");
 	//	log.info("We are in ViewSerlet");
 		
 		String nextView = RequestViewHelper.process(req);

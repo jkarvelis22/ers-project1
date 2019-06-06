@@ -24,6 +24,7 @@ public class FinancialManagerServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		j.info("FinancialManagerServlet.doGet(" + request + "," + response + ")");
 		// populate the page with all the tickets that exist in the data base
 		PrintWriter writer = response.getWriter();
 		ObjectMapper mapper = new ObjectMapper();
@@ -69,7 +70,8 @@ public class FinancialManagerServlet extends HttpServlet {
 
 	@Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    	System.out.println("IN THE DO POST");
+		j.info("FinancialManagerServlet.doPost(" + req + "," + resp + ")");
+		System.out.println("IN THE DO POST");
 		
 		ObjectMapper mapper = new ObjectMapper();
 		

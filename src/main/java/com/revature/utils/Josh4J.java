@@ -12,7 +12,7 @@ public class Josh4J {
         }
         return k;
     }
-    public static void info(String info) {
+    public void info(String info) {
         Date d = new Date();
         System.out.println(d.getHours() + " : " + d.getMinutes() + " : " + d.getSeconds() + " " + info);
     }

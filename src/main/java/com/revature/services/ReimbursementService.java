@@ -16,18 +16,22 @@ public class ReimbursementService {
 	private ReimbursementDAO reimDao = new ReimbursementDAO();
 	
 	public List<Reimbursement> getAll(){
+		j.info("ReimbursementService.getAll()");
 		return reimDao.getAll();
 	}
 	
 	public Reimbursement getById(int reimbId) {
+		j.info("ReimbursementService.getById(" + reimbId + ")");
 		return reimDao.getById(reimbId);
 	}
 	
 	public List<Reimbursement> getByAuthor(int reimAuthor) {
+		j.info("ReimbursementService(" + reimAuthor + ")");
 		return reimDao.getByAuthor(reimAuthor);
 	}
 	
 	public  Reimbursement add(Reimbursement newReimbursement) {
+		j.info("ReimbursementService.add(" + newReimbursement + ")");
 		//check if all fields are not empty, except for receipt
 		if(newReimbursement.getAmount() == 0 || newReimbursement.getSubmitted().equals("") 
 				|| newReimbursement.getDescription().equals("") || newReimbursement.getAuthor() == 0
@@ -39,6 +43,7 @@ public class ReimbursementService {
 	}
 	
 	public Reimbursement update(Reimbursement newReimbursement) {
+		j.info("ReimbursementService.update(" + newReimbursement + ")");
         reimDao.update(newReimbursement);
         return newReimbursement; 
 	}

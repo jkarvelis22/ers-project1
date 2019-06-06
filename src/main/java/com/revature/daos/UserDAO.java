@@ -19,17 +19,19 @@ public class UserDAO implements DAO<User> {
 //	private static Logger log = Logger.getLogger(UserDAO.class);
 	
 	public User getByUsername(String username) {
+		j.info("UserDAO.getByUsername(" + username + ")");
 		
 	User user = null;
 		
 		try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
-			
+			j.info("UserDAO(" + username + ") : Variable == False : try catch block entered.");
 			PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM ers_users JOIN ers_user_roles ON ers_users.user_role_id = ers_user_roles.ers_user_role_id WHERE ers_username = ?");
 			pstmt.setString(1, username);
 			System.out.println("SQL STATEMENT");
 			
 			List<User> users = this.mapResultSet(pstmt.executeQuery());
 			if (!users.isEmpty()) user = users.get(0);
+			j.info("UserDAO.getByUsername(" + username + ") : Variable == False : if block entered.");
 			System.out.println(user);
 			
 		} catch (SQLException e) {
@@ -41,17 +43,19 @@ public class UserDAO implements DAO<User> {
 	}
 	
 	public User getByCredentials(String username, String password) {
+		j.info("UserDAO.getByCredentials(" + username + "," + password + ")");
 		
 		User user = null;
 		
 		try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
-			
+			j.info("UserDAO.getByCredentials(" + username + "," + password + ") : Variable == False : Try catch block entered.");
 			PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM ers_users JOIN ers_user_roles ON ers_users.user_role_id = ers_user_roles.ers_user_role_id WHERE ers_username = ? AND ers_password = ?");
 			pstmt.setString(1, username);
 			pstmt.setString(2, password);
 			
 			List<User> users = this.mapResultSet(pstmt.executeQuery());
 			if (!users.isEmpty()) user = users.get(0);
+			j.info("UserDAO.getByCredentials(" + username + "," + password + ") : Variable == False : if block entered.");
 			
 		} catch (SQLException e) {
 //			log.error(e.getMessage());
@@ -63,10 +67,12 @@ public class UserDAO implements DAO<User> {
 	@Override
 	public List<User> getAll() {
 		
+		j.info("UserDAO.getAll()");
+		
 		List<User> users = new ArrayList<>();
 		
 		try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
-			
+			j.info("UserDAO.getAll() : Variable == False : try catch block entered.");
 			ResultSet rs = conn.createStatement().executeQuery("SELECT * FROM ers_users JOIN ers_user_roles ON ers_users.user_role_id = ers_user_roles.ers_user_role_id");
 			users = this.mapResultSet(rs);
 			
@@ -81,11 +87,12 @@ public class UserDAO implements DAO<User> {
 	
 	@Override
 	public User getById(int userId) {
+		j.info("UserDAO.getById(" + userId + ")");
 		
 		User user = null;;
 		
 		try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
-			
+			j.info("UserDAO.getById(" + userId + ") : Variable == False : try catch block entered.");
 			PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM ers_users JOIN ers_user_roles ON ers_users.user_role_id = ers_user_roles.ers_user_role_id WHERE ers_users_id = ?");
 			pstmt.setInt(1, userId);
 			
@@ -93,6 +100,7 @@ public class UserDAO implements DAO<User> {
 			List<User> users = this.mapResultSet(rs);
 			
 			if (!users.isEmpty()) {
+				j.info("UserDAO.getById(" + userId + ") : Variable == False : if block entered.");
 				user = users.get(0);
 				user.setPassword("*********");
 			}
@@ -106,13 +114,14 @@ public class UserDAO implements DAO<User> {
 	
 	@Override
 	public User add(User newUser) {
+		j.info("UserDAO.add(" + newUser + ")");
 		
 		Role newRole = new Role();
 		newRole.setRoleId(2);
 		newRole.setRoleName("employee");
 		
 		try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
-			
+			j.info("UserDAO.add(" + newUser + ") : Variable == False : try catch block entered.");
 			conn.setAutoCommit(false);
 			
 			String sql = "INSERT INTO ers_users VALUES (0, ?, ?, ?, ?, ?, 2)";
@@ -131,6 +140,7 @@ public class UserDAO implements DAO<User> {
 			ResultSet rs = pstmt.getGeneratedKeys();
 			
 			if(rowsInserted != 0) {
+				j.info("UserDAO.add(" + newUser + ") : Variable == False : Else block entered.");
 				
 				while(rs.next()) {
 					newUser.setId(rs.getInt(1));
@@ -149,10 +159,12 @@ public class UserDAO implements DAO<User> {
 		}
 		
 		if(newUser.getId() == 0) return null;
+		j.info("UserDAO.add(" + newUser + ") : Variable == False : if block entered.");
 		
 		return newUser;
 	}
 	private List<User> mapResultSet(ResultSet rs) throws SQLException {
+		j.info("UserDAO.mapResultSet(" + rs + ")");
 		
 		List<User> users = new ArrayList<>();
 		
