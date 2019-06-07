@@ -86,6 +86,7 @@ public class FinancialManagerServlet extends HttpServlet {
 			//	log.info("input on update is null");
 				resp.setStatus(400);
 				System.out.println("400 STATUS");
+				j.info("FinancialManagerServlet.doPost(" + req + "," + resp + ") : VALUE was returned");
 				return;
 				
 			}
@@ -106,11 +107,13 @@ public class FinancialManagerServlet extends HttpServlet {
 			System.out.println(mie.getMessage());
 	//		log.error(mie.getMessage());
 			resp.setStatus(400);
+			j.info("FinancialManagerServlet.doPost(" + req + "," + resp + ") : VALUE was returned");
 			return;
 		} catch (Exception e) {
 			System.out.println("CAUGHT THE EXCEPTION");
 			System.out.println(e.getMessage());
 			resp.setStatus(500);
+			j.info("FinancialManagerServlet.doPost(" + req + "," + resp + ") : VALUE was returned");
 			return;
 		}
 	}

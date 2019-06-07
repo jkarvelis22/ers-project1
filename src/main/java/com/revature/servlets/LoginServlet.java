@@ -100,6 +100,7 @@ public class LoginServlet extends HttpServlet {
 			if(credentials == null || credentials.getUsername().equals("") || credentials.getPassword().equals("")) {
 				j.info("LoginServlet.doPost(" + request + "," + response + ") : Variable == False :if block entered.");
 				response.setStatus(400);
+				j.info("LoginServlet.doPost(" + request + "," + response + ") : VALUE was returned");
 				return;
 			}
 			
@@ -108,6 +109,7 @@ public class LoginServlet extends HttpServlet {
 			if(authUser == null) {
 				j.info("LoginServlet.doPost(" + request + "," + response + ") : Variable == False : if block entered.");
 				response.setStatus(401);
+				j.info("LoginServlet.doPost(" + request + "," + response + ") : VALUE was returned");
 				return;	
 			}
 			

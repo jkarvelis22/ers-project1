@@ -254,12 +254,14 @@ public class RegistrationServlet extends HttpServlet {
 			System.out.println("[WARN] - no principal attribute found on request");
 			j.info("RegistrationServlet.doGet(" + request + "," + response + ") : Variable == False : if block entered.");
 			response.setStatus(401);
+			j.info("RegistrationServlet.doGet(" + request + "," + response + ") : VALUE was returned");
 			return;
 		}
 		if(!principal.getRole().equalsIgnoreCase("Manager")) {
 			System.out.println("[WARN] - unauthorized access attempt made");
 			j.info("RegistrationServlet.doGet(" + request + "," + response + ") : Variable == False : if block entered.");
 			response.setStatus(403);
+			j.info("RegistrationServlet.doGet(" + request + "," + response + ") : VALUE was returned");
 			return;
 		}
 		
@@ -283,10 +285,12 @@ public class RegistrationServlet extends HttpServlet {
 		} catch (MismatchedInputException mie) {
 			log.error(mie.getMessage());
 			response.setStatus(400); // BAD REQUEST status code
+			j.info("RegistrationServlet.doGet(" + request + "," + response + ") : VALUE was returned");
 			return;
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			response.setStatus(500); // INTERNAL SERVER ERROR status code
+			j.info("RegistrationServlet.doGet(" + request + "," + response + ") : VALUE was returned");
 			return;
 		}
 		
