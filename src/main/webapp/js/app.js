@@ -1,20 +1,22 @@
 const NAVBAR = document.getElementById('navbar');
 const PAGE_BODY = document.getElementById('app-view');
 const DYNAMIC_CSS = document.getElementById('dynamic-css');
+let currentUserId = null;
 
 window.onload = function () {
-    console.log("Beginning to render the page 0");
+    console.log("Beginning to render the page 2");
     const USER_SERVICE = new UserService();
     const ROUTER = new Router();
     const AUTH_SERVICE = new AuthService(ROUTER);
   //  const ReimbService = new ReimbService();
+  const REIMB_SERVICE = new ReimbService();
 
     const FINANCE_MANAGER_COMPONENT = new FinanceManagerComponent();
     const EMPLOYEE_COMPONENT = new EmployeeComponent(ReimbService, ROUTER);
     const LOGIN_COMPONENT = new LoginComponent(AUTH_SERVICE, ROUTER);
     const REGISTER_COMPONENT = new RegisterComponent(USER_SERVICE, ROUTER);
     const NAVBAR_COMPONENT = new NavbarComponent(ROUTER);
-    const REIMBURSEMENTS_COMPONENT = new ReimbursementsComponent(ROUTER);
+    const REIMBURSEMENTS_COMPONENT = new ReimbursementsComponent(REIMB_SERVICE, USER_SERVICE, ROUTER);
 
     console.log("Components loaded");
 
@@ -71,6 +73,7 @@ class LoginComponent {
 
     render = () => {
         console.log('Rendering LoginComponent template...');
+        currentUserId = null;
         PAGE_BODY.innerHTML = this.template;
         document.getElementById('login-btn').addEventListener('click', this.login);
         document.getElementById('register-link').addEventListener('click', this.router.fetchComponent('register').render);
@@ -235,17 +238,17 @@ class RegisterComponent {
         console.log("Rendering RegisterComponent template...");
         PAGE_BODY.innerHTML = this.template;
         document.getElementById("register-account").addEventListener("click", this.register);
-        document.getElementById("back-to-login").addEventListener("click", this.router.fetchComponent("login").render);
+        document.getElementById("back-to-login").addEventListener("click", this.router.fetchComponent("register").render);
         console.log("Rendering complete.");
     }
 
     register = () => {
         let newUser = {
-            username: document.getElementById("username-input").value,
-            password: document.getElementById("password-input").value,
-            firstName: document.getElementById("first-name-input").value,
-            lastName: document.getElementById("last-name-input").value,
-            email: document.getElementById('email-input').value
+            username: document.getElementById("register-username").value,
+            password: document.getElementById("register-password").value,
+            firstName: document.getElementById("register-first-name").value,
+            lastName: document.getElementById("register-last-name").value,
+            email: document.getElementById('register-email').value
         }
         let registeredUser = this.userService.register(newUser);
 
@@ -390,11 +393,11 @@ class ReimbursementsComponent {
 
     <br>
         
-    <h1 class="text-center">????????</h1>
+    <h1 class="text-center">REIMB Inc.</h1>
         
     <br>
         
-    <h6 class="text-center">??????????</h6>
+    <h5 class="text-center">Please submit your reimbursement</h5>
         
     <br>
         
@@ -459,19 +462,80 @@ class ReimbursementsComponent {
     //     PAGE_BODY.innerHTML = this.template;
     // }
 
-    constructor(userService, router) {
+    constructor(ReimbService, userService, router) {
         console.log("Intantiating UserService...");
         this.userService = userService;
         this.router = router;
+        this.ReimbService = ReimbService;
         console.log("UserService instantiation complete.");
     }
 
     render = () => {
         console.log("Rendering RegisterComponent template...");
         PAGE_BODY.innerHTML = this.template;
-        document.getElementById("register-account").addEventListener("click", this.register);
-        document.getElementById("back-to-login").addEventListener("click", this.router.fetchComponent("login").render);
+        document.getElementById("register-reimbursement").addEventListener("click", this.createR);
+        document.getElementById("back-to-dashboard").addEventListener("click", this.router.fetchComponent("login").render);
         console.log("Rendering complete.");
+    }
+
+    createR = async () => {
+        console.log('value is' + document.getElementById('reim-type').value)
+        let TypeId = 0;
+switch (document.getElementById('reim-type').value){
+    case 'lodging': TypeId = 1;
+    break;
+    case 'travel':  TypeId = 2;
+        break;
+        case 'food' :  TypeId = 3;
+        break;
+        case 'other' :  TypeId = 4;
+            break;
+    
+}
+        let newR = {
+            id: 0,
+            amount: document.getElementById('reim-amount').value,
+            submitted: null,
+            resolved: null,
+            description: document.getElementById('reim-description').value,
+            receipt: null,
+            author: currentUserId,
+            resolver: 1,
+            reimbStatus: {
+                reimbStatusId : 1,
+                reimbStatusName: 'pending'
+                
+            },
+            reimbType: {
+                reimbTypeId : TypeId,
+                reimbTypeName : document.getElementById('reim-type').value
+            }
+            // rType: document.getElementById('reim-type').value
+            // {
+            //     "id": 22,
+            //     "amount" : 400,
+            //     "submitted" : "yes",
+            //     "resolved" : "N/A",
+            //     "description" : "Went to Ireland",
+            //     "receipt" : null,
+            //     "author" : 4,
+            //     "resolver" : 2,
+            //      "reimbStatus": {
+            //             "reimbStatusId": 1,
+            //             "reimbStatusName": "pending"
+            //      },
+            //         "reimbType": {
+            //             "reimbTypeId": 1,
+            //             "reimbTypeName": "food"
+            
+            //         }
+            
+            // }
+        }
+        let rr = await this.ReimbService.register(newR);
+console.dir(rr);
+    
+       
     }
 }
 
@@ -498,7 +562,7 @@ class EmployeeComponent {
         <ul class="nav nav-pills nav-stacked" style="border-right:1px solid rgb(140, 145, 146)">
             <!--<li class="nav-header"></li>-->
             <li><a id= "new-reim-request">Create New Reimbursement</a></li>
-            <li><a id = "logout-again"><i class="fa fa-lock" class="pointer"></i> Logout</a></li>
+            <li><a id = "logout-again"></i> Logout</a></li>
         </ul>
     </div><!-- /span-3 -->
     <div class="col-lg-10 col-md-10 col-sm-9 col-xs-12">
@@ -530,6 +594,7 @@ class EmployeeComponent {
         console.log("Rendering the EmployeeComponent template...");
         PAGE_BODY.innerHTML = this.template;
         document.getElementById("new-reim-request").addEventListener("click", this.router.fetchComponent("Reimbursements").render);
+        document.getElementById("logout-again").addEventListener("click", this.router.fetchComponent("Reimbursements").render);
     }
 
     constructor(ReimbService, router) {
@@ -587,6 +652,7 @@ class UserService {
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     register = async (newUser) => {
+    
         let response = await fetch('register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -626,7 +692,9 @@ class AuthService {
 
         let data = await response.json();
         this.currentUser = data;
-
+        currentUserId = data.id;
+        console.log('RECEIVED A RESPONSE');
+console.dir(data);
         return data;
     
         }
@@ -665,12 +733,16 @@ class ReimbService {
         console.log('UserService.getByUsername() not implemented');
     }
 
-    register = async (newUser) => {
-        let response = await fetch('register', {
+    register = async (newReimb) => {
+        console.log('attempting to add ticket');
+        console.dir(newReimb);
+        let response = await fetch('employee', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newUser)
+            body: JSON.stringify(newReimb)
         });
+        let createdReimb = await response.json();
+        return createdReimb;
 
 
     }

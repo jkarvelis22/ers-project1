@@ -51,9 +51,10 @@ import com.revature.utils.Josh4J;
 				
 				reimb = mapper.readValue(req.getInputStream(), Reimbursement.class);
 				System.out.println("MAPPER READ VALUES");
-				
+				System.out.println(reimb);
 			} catch (MismatchedInputException mie) {
 				mie.printStackTrace();
+				System.out.println(mie.getMessage());
 			//	log.error(mie.getMessage());
 				resp.setStatus(400);
 				j.info("EmployeeServlet.doPost(" + req + "," + resp + ") : VALUE was returned");
