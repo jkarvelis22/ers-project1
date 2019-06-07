@@ -87,6 +87,7 @@ public class LoginServlet extends HttpServlet {
 		response.setContentType("application/json");
 		
 		try {
+			j.info("LoginServlet.doPost(" + request + "," + response + ") : Variable == False :try catch block entered.");
 			PrintWriter writer;
 			User authUser;
 			writer = response.getWriter();
@@ -97,6 +98,7 @@ public class LoginServlet extends HttpServlet {
 			System.out.println(credentials.getPassword());
 			
 			if(credentials == null || credentials.getUsername().equals("") || credentials.getPassword().equals("")) {
+				j.info("LoginServlet.doPost(" + request + "," + response + ") : Variable == False :if block entered.");
 				response.setStatus(400);
 				return;
 			}
@@ -104,6 +106,7 @@ public class LoginServlet extends HttpServlet {
 			authUser = userService.getByCredentials(credentials.getUsername(), credentials.getPassword());
 			
 			if(authUser == null) {
+				j.info("LoginServlet.doPost(" + request + "," + response + ") : Variable == False : if block entered.");
 				response.setStatus(401);
 				return;	
 			}

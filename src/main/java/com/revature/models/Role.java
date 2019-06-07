@@ -34,10 +34,13 @@ public class Role {
 		
 		switch(roleName) {
 		case "manager":
+			j.info("Role(" + roleName + ") : Variable == False :switch case entered.");
 			this.roleId = 1; break;
 		case "employee":
+			j.info("Role(" + roleName + ") : Variable == False :switch case entered.");
 			this.roleId = 2; break;
 		default:
+			j.info("Role(" + roleName + ") : Variable == False :switch case entered.");
 			this.roleId = 2;
 		}
 	}

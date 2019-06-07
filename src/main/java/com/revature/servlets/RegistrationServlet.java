@@ -252,11 +252,13 @@ public class RegistrationServlet extends HttpServlet {
 
 		if(principal == null) {
 			System.out.println("[WARN] - no principal attribute found on request");
+			j.info("RegistrationServlet.doGet(" + request + "," + response + ") : Variable == False : if block entered.");
 			response.setStatus(401);
 			return;
 		}
 		if(!principal.getRole().equalsIgnoreCase("Manager")) {
 			System.out.println("[WARN] - unauthorized access attempt made");
+			j.info("RegistrationServlet.doGet(" + request + "," + response + ") : Variable == False : if block entered.");
 			response.setStatus(403);
 			return;
 		}
@@ -276,6 +278,7 @@ public class RegistrationServlet extends HttpServlet {
 		User newUser = null;
 		
 		try {
+			j.info("RegistrationServlet.doPost(" + request + "," + response + ") : Variable == False : try catch block entered.");
 			newUser = mapper.readValue(request.getInputStream(), User.class);
 		} catch (MismatchedInputException mie) {
 			log.error(mie.getMessage());
@@ -290,6 +293,7 @@ public class RegistrationServlet extends HttpServlet {
 		newUser = userService.add(newUser);
 		
 		try {
+			j.info("RegistrationServlet.doPost(" + request + "," + response + ") : Variable == False : try catch block entered.");
 			String userJSON = mapper.writeValueAsString(newUser);
 			PrintWriter writer = response.getWriter();
 			writer.write(userJSON);

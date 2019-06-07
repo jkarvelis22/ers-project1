@@ -46,6 +46,7 @@ import com.revature.utils.Josh4J;
 			ObjectMapper mapper = new ObjectMapper();
 			
 			try {
+				j.info("EmployeeServlet.doPost(" + req + resp + ") : Variable == False :try catch block entered.");
 						System.out.println("ENTERED THE TRY BLOCK");
 				
 				reimb = mapper.readValue(req.getInputStream(), Reimbursement.class);
@@ -55,10 +56,12 @@ import com.revature.utils.Josh4J;
 				mie.printStackTrace();
 			//	log.error(mie.getMessage());
 				resp.setStatus(400);
+				j.info("EmployeeServlet.doPost(" + req + "," + resp + ") : VALUE was returned");
 				return;
 			} catch (Exception e) {
 				System.out.println(e.getMessage());;
 				resp.setStatus(500);
+				j.info("EmployeeServlet.doPost(" + req + "," + resp + ") : VALUE was returned");
 				return;
 			}
 			System.out.println("GOING INTO REIMBSERVICE");

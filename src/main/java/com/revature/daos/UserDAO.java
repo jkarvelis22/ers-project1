@@ -38,7 +38,7 @@ public class UserDAO implements DAO<User> {
 			System.out.println("CAUGHT THE EXCEPTION");
 //			log.error(e.getMessage());
 		}
-		
+		j.info("UserDAO.update(" + username + ") : VALUE was returned");
 		return user;
 	}
 	
@@ -60,7 +60,7 @@ public class UserDAO implements DAO<User> {
 		} catch (SQLException e) {
 //			log.error(e.getMessage());
 		}
-				
+		j.info("UserDAO.getByCredentials(" + username + password + ") : VALUE was returned");	
 		return user;
 	}
 	
@@ -81,7 +81,7 @@ public class UserDAO implements DAO<User> {
 		} catch (SQLException e) {
 //			log.error(e.getMessage());
 		}
-		
+		j.info("UserDAO.getAll() : VALUE was returned");
 		return users;
 	}
 	
@@ -108,7 +108,7 @@ public class UserDAO implements DAO<User> {
 		} catch (SQLException e) {
 //			log.error(e.getMessage());
 		}
-		
+		j.info("UserDAO.getById(" + userId + ") : VALUE was returned");
 		return user;
 	}
 	
@@ -161,6 +161,7 @@ public class UserDAO implements DAO<User> {
 		if(newUser.getId() == 0) return null;
 		j.info("UserDAO.add(" + newUser + ") : Variable == False : if block entered.");
 		
+		j.info("UserDAO.add(" + newUser + ") : VALUE was returned");
 		return newUser;
 	}
 	private List<User> mapResultSet(ResultSet rs) throws SQLException {
@@ -179,7 +180,7 @@ public class UserDAO implements DAO<User> {
 			user.setRole(new Role(rs.getInt("user_role_id")));
 			users.add(user);
 		}
-		
+		j.info("UserDAO.mapResultSet(" + rs + ") : VALUE was returned");
 		return users;
 	}
 

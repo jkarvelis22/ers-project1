@@ -39,7 +39,7 @@ List<Reimbursement> reimbursements = new ArrayList<>();
 		} catch (SQLException e) {
 	//		log.error(e.getMessage());
 		}
-
+		j.info("ReimbursementDAO.getAll() : VALUE was returned");
 		return reimbursements;
 	}
 	
@@ -61,7 +61,7 @@ List<Reimbursement> reimbursements = new ArrayList<>();
 		} catch (SQLException e) {
 //			log.error(e.getMessage());
 		}
-
+		j.info("ReimbursementDAO.getById(" + reimbId + ") : VALUE was returned");
 		return reimbursement;
 	}
 	
@@ -98,7 +98,7 @@ List<Reimbursement> reimbursements = new ArrayList<>();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+		j.info("ReimbursementDAO.getByAuthor(" + author + ") : VALUE was returned");
 		return reimbursementsList;
 	}
 	
@@ -141,6 +141,7 @@ List<Reimbursement> reimbursements = new ArrayList<>();
 		
 		if(newReimbursement.getId() == 0) return null;
 		j.info("ReimbursementDAO.add(" + newReimbursement + ") : Variable == False : Else block entered.");
+		j.info("ReimbursementDAO.add(" + newReimbursement + ") : VALUE was returned");
 		return newReimbursement;
 	}
 	
@@ -180,13 +181,14 @@ List<Reimbursement> reimbursements = new ArrayList<>();
 			
 			pstmt.executeUpdate();
 				conn.commit();
+				j.info("ReimbursementDAO.update(" + updatedReimbursement + ") : VALUE was returned");
 				return updatedReimbursement;
 			
 			} catch (SQLException e) {
 				System.out.println(e.getMessage());
 	//		log.error(e.getMessage());
 		}
-		
+		j.info("ReimbursementDAO.update(" + updatedReimbursement + ") : VALUE was returned");
 		return null;
 	}
 	
@@ -208,7 +210,7 @@ List<Reimbursement> reimbursements = new ArrayList<>();
 			reimbursement.setReimbType(new ReimbursementType(rs.getInt("reimb_type_id")));
 			reimbursements.add(reimbursement);
 		}
-		
+		j.info("ReimbursementDAO.mapResultSet(" + rs + ") : VALUE was returned");
 		return reimbursements;
 	}
 

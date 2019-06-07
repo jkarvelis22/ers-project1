@@ -17,16 +17,19 @@ public class ReimbursementService {
 	
 	public List<Reimbursement> getAll(){
 		j.info("ReimbursementService.getAll()");
+		j.info("ReimbursementService.getAll() : VALUE was returned");
 		return reimDao.getAll();
 	}
 	
 	public Reimbursement getById(int reimbId) {
 		j.info("ReimbursementService.getById(" + reimbId + ")");
+		j.info("ReimbursementService.getById(" + reimbId + ") : VALUE was returned");
 		return reimDao.getById(reimbId);
 	}
 	
 	public List<Reimbursement> getByAuthor(int reimAuthor) {
-		j.info("ReimbursementService(" + reimAuthor + ")");
+		j.info("ReimbursementService.getByAuthor(" + reimAuthor + ")");
+		j.info("ReimbursementService.getByAuthor(" + reimAuthor + ") : VALUE was returned");
 		return reimDao.getByAuthor(reimAuthor);
 	}
 	
@@ -36,15 +39,19 @@ public class ReimbursementService {
 		if(newReimbursement.getAmount() == 0 || newReimbursement.getSubmitted().equals("") 
 				|| newReimbursement.getDescription().equals("") || newReimbursement.getAuthor() == 0
 				|| newReimbursement.getReimbStatus().equals(null) || newReimbursement.getReimbType().equals(null)) {
-	//		log.info("New Reimbursement has empty fields!");
+			j.info("ReimbursementService.add(" + newReimbursement + ") : Variable == False :if block entered.");
+			//		log.info("New Reimbursement has empty fields!");
+			j.info("ReimbursementService.add(" + newReimbursement + ") : VALUE was returned");
 			return null;
 		}
+		j.info("ReimbursementService.add(" + newReimbursement + ") : VALUE was returned");
 		return reimDao.add(newReimbursement);
 	}
 	
 	public Reimbursement update(Reimbursement newReimbursement) {
 		j.info("ReimbursementService.update(" + newReimbursement + ")");
         reimDao.update(newReimbursement);
+        j.info("ReimbursementService.update(" + newReimbursement + ") : VALUE was returned");
         return newReimbursement; 
 	}
 }

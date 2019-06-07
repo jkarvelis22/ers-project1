@@ -76,6 +76,7 @@ public class FinancialManagerServlet extends HttpServlet {
 		ObjectMapper mapper = new ObjectMapper();
 		
 		try {
+			j.info("FianancialManagerServlet.doPost(" + req + "," + resp + ") : Variable == False :switch case entered.");
 			System.out.println("IN THE TRY BLOCK");
 			Reimbursement val = mapper.readValue(req.getInputStream(), Reimbursement.class);
 			System.out.println(val);

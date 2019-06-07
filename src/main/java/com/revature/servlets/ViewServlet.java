@@ -25,7 +25,9 @@ public class ViewServlet extends HttpServlet {
 		String nextView = RequestViewHelper.process(req);
 
 		if (nextView != null) {
+			j.info("ViewServlet.doGet(" + req + "," + resp + ") : Variable == False : if block entered.");
 			try {
+				j.info("ViewServlet.doPost(" + req + "," + resp + ") : Variable == False : try catch block entered.");
 				req.getRequestDispatcher(nextView).forward(req, resp);
 			} catch (Exception e) {
 			//	log.error(e.getMessage());
@@ -33,6 +35,7 @@ public class ViewServlet extends HttpServlet {
 				resp.setStatus(500);
 			}
 		} else {
+			j.info("RegistrationServlet.doPost(" + req + "," + resp + ") : Variable == False : else statement entered.");
 			resp.setStatus(401);
 		}
 
