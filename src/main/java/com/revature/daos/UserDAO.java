@@ -60,7 +60,7 @@ public class UserDAO implements DAO<User> {
 		} catch (SQLException e) {
 //			log.error(e.getMessage());
 		}
-		j.info("UserDAO.getByCredentials(" + username + password + ") : VALUE was returned");	
+		j.info("UserDAO.getByCredentials(" + username + "," + password + ") : VALUE was returned");	
 		return user;
 	}
 	

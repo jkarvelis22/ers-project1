@@ -2,36 +2,46 @@ const NAVBAR = document.getElementById('navbar');
 const PAGE_BODY = document.getElementById('app-view');
 const DYNAMIC_CSS = document.getElementById('dynamic-css');
 
-window.onload = function() {
-  console.log("Beginning to render the page...");
-  const USER_SERVICE = new UserService();
-  const AUTH_SERVICE = new AuthService();  
-  const ROUTER = new Router();
-  const FINANCE_MANAGER_COMPONENT = new FinanceManagerComponent();
-  const EMPLOYEE_COMPONENT = new EmployeeComponent();
-  const LOGIN_COMPONENT = new LoginComponent(AUTH_SERVICE, ROUTER);
-  const REGISTER_COMPONENT = new RegisterComponent(USER_SERVICE, ROUTER);
-  const NAVBAR_COMPONENT = new NavbarComponent(ROUTER);
+window.onload = function () {
+    console.log("Beginning to render the page 0");
+    const USER_SERVICE = new UserService();
+    const ROUTER = new Router();
+    const AUTH_SERVICE = new AuthService(ROUTER);
+  //  const ReimbService = new ReimbService();
 
-  console.log("Components loaded");
+    const FINANCE_MANAGER_COMPONENT = new FinanceManagerComponent();
+    const EMPLOYEE_COMPONENT = new EmployeeComponent(ReimbService, ROUTER);
+    const LOGIN_COMPONENT = new LoginComponent(AUTH_SERVICE, ROUTER);
+    const REGISTER_COMPONENT = new RegisterComponent(USER_SERVICE, ROUTER);
+    const NAVBAR_COMPONENT = new NavbarComponent(ROUTER);
+    const REIMBURSEMENTS_COMPONENT = new ReimbursementsComponent(ROUTER);
 
-  console.log("Populating routes");
-  ROUTER.addRoute("login", LOGIN_COMPONENT);
-  ROUTER.addRoute("register", REGISTER_COMPONENT);
-  ROUTER.addRoute("manager", FINANCE_MANAGER_COMPONENT);
-  ROUTER.addRoute("employee", EMPLOYEE_COMPONENT);
-  console.log("Routes populated.")
+    console.log("Components loaded");
 
-  NAVBAR_COMPONENT.render();
-  LOGIN_COMPONENT.render();
+    console.log("Populating routes");
+    ROUTER.addRoute("login", LOGIN_COMPONENT);
+    ROUTER.addRoute("register", REGISTER_COMPONENT);
+    ROUTER.addRoute("manager", FINANCE_MANAGER_COMPONENT);
+    ROUTER.addRoute("employee", EMPLOYEE_COMPONENT);
+    ROUTER.addRoute("Reimbursements", REIMBURSEMENTS_COMPONENT);
+
+
+    if (LOGIN_COMPONENT && REGISTER_COMPONENT && FINANCE_MANAGER_COMPONENT && EMPLOYEE_COMPONENT) {
+
+
+        console.log("Routes populated.")
+
+        NAVBAR_COMPONENT.render();
+        LOGIN_COMPONENT.render();
+    }
 }
 //------------------------------------------------------------------
 // Components
 
 class LoginComponent {
 
-  template = 
-  `<div class="container">
+    template =
+        `<div class="container">
 
   <div class="box-border" id="login-box">
       <div class="box-body">
@@ -39,9 +49,9 @@ class LoginComponent {
               <h3>Login</h3>
           <p>Sign in to an existing account:</p>
           <hr>
-              <i class="fas fa-user"></i><input type="text" placeholder="Username" id="username-input">
+              <i class="fas fa-user"></i><input type="text" placeholder="Username" id="username-cred">
               <br>
-              <i class="fas fa-unlock-alt"></i><input type="password" placeholder="Password" id="password-input">
+              <i class="fas fa-unlock-alt"></i><input type="password" placeholder="Password" id="password-cred">
               <br>
           <button id="login-btn">Login&nbsp;<i class="fas fa-arrow-right"></i></button>
           <br>
@@ -52,83 +62,41 @@ class LoginComponent {
 </div> 
 `;
 
-constructor(authService, router) {
-  console.log('Instantiating LoginComponent');
-  this.authService = authService;
-  this.router = router;
-  console.log('Instantiation of LoginComponent complete.')
+    constructor(authService, router) {
+        console.log('Instantiating LoginComponent');
+        this.authService = authService;
+        this.router = router;
+        console.log('Instantiation of LoginComponent complete.')
+    }
+
+    render = () => {
+        console.log('Rendering LoginComponent template...');
+        PAGE_BODY.innerHTML = this.template;
+        document.getElementById('login-btn').addEventListener('click', this.login);
+        document.getElementById('register-link').addEventListener('click', this.router.fetchComponent('register').render);
+
+        console.log('LoginComponent rendered.');
+    }
+
+    login = async () => {
+
+        let username = document.getElementById('username-cred').value;
+        let password = document.getElementById('password-cred').value;
+
+        localStorage.setItem('principal', await this.authService.authenticate(username, password));
+
+
+        //   document.getElementById('alert-msg').setAttribute('hidden', true);
+        this.router.fetchComponent('employee').render();
+
+    }
 }
 
-render = () => {
-  console.log('Rendering LoginComponent template...');
-  PAGE_BODY.innerHTML = this.template;
-  document.getElementById('login-btn').addEventListener('click', this.login);
-  document.getElementById('register-link').addEventListener('click', this.router.fetchComponent('register').render);
-
-  console.log('LoginComponent rendered.');
-}
-
-login = async () => {
-
-  let username = document.getElementById('username-cred').value;
-  let password = document.getElementById('password-cred').value;
-
-  let user = await this.authService.authenticate(username, password);
-
-  if(user) {
-      console.log('Authentication successful!');
-      document.getElementById('alert-msg').setAttribute('hidden', true);
-      this.router.fetchComponent('dashboard').render();
-
-  } else {
-      document.getElementById('alert-msg').removeAttribute('hidden');
-  }
-}
-}
-//   constructor(authService, router) {
-//     console.log("Instantiating LoginComponent...");
-//     this.authService = authService;
-//     this.router = router;
-//     this.FinanceManagerComponent = FinanceManagerComponent;
-//     console.log("Instantiation of LoginComponent complete.")
-//   }
-
-//   render = () => {
-//     console.log('Rendering LoginComponent template...');
-//     PAGE_BODY.innerHTML = this.thing;
-//     document.getElementById('login-btn').addEventListener('click', this.login);
-//     document.getElementById('register-link').addEventListener('click', this.router.fetchComponent('register').render);
-//     console.log('LoginComponent rendered.');  
-  
-//   }
-
-//   login = async () => {
-
-//     let username = document.getElementById('username-input').value;
-//     let password = document.getElementById('password-input').value;
-
-//     let user = await this.authService.authenticate(username, password);
-
-//     if(user) {
-//         console.log('Authentication successful!');
-//         if (user.roleId == 1) {
-//             this.router.fetchComponent("manager").render();
-//             return;
-//         } else if(user.roleId == 2) {
-//             this.router.fetchComponent("employee").render();
-//             return;
-//         }
-       
-//     } else {
-//         document.getElementById('alert-msg').removeAttribute('hidden');
-//     }
-
-//   }
-// }
+//   
 
 class NavbarComponent {
-  
-  template = `
+
+    template = `
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
       <a class="navbar-brand" id="to-dashboard" href="#">REIMB Inc.</a>
       
@@ -156,27 +124,27 @@ class NavbarComponent {
   </nav>
   `;
 
- // constructor(LoginComponent, RegisterComponent) {
-   constructor(router) {
-    console.log("Instantiating NavbarComponent...");
-    this.router = router;
-    console.log("NavBar component instantiation complete.");
-  }
+    // constructor(LoginComponent, RegisterComponent) {
+    constructor(router) {
+        console.log("Instantiating NavbarComponent...");
+        this.router = router;
+        console.log("NavBar component instantiation complete.");
+    }
 
-  render = () => {
-    console.log("Rendering NavbarComponent template...");
-    NAVBAR.innerHTML = this.template;
-    // document.getElementById("toHome").addEventListener("click", this.router.fetchComponent("login").render)
-    // document.getElementById("nav-pending").addEventListener("click", this.router.fetchComponent("manager").render);
-    document.getElementById("to-login").addEventListener("click", this.router.fetchComponent("login").render);
-    document.getElementById("to-register").addEventListener("click", this.router.fetchComponent("register").render);
-    console.log("Rendering complete.");
-  }
+    render = () => {
+        console.log("Rendering NavbarComponent template...");
+        NAVBAR.innerHTML = this.template;
+        // document.getElementById("toHome").addEventListener("click", this.router.fetchComponent("login").render)
+        // document.getElementById("nav-pending").addEventListener("click", this.router.fetchComponent("manager").render);
+        document.getElementById("to-login").addEventListener("click", this.router.fetchComponent("login").render);
+        document.getElementById("to-register").addEventListener("click", this.router.fetchComponent("register").render);
+        console.log("Rendering complete.");
+    }
 }
 
 class RegisterComponent {
 
-  template = `
+    template = `
   <div class="container">
     
   <br>
@@ -256,43 +224,43 @@ class RegisterComponent {
 </div>
 `;
 
-  constructor(userService, router) {
-    console.log("Intantiating UserService...");
-    this.userService = userService;
-    this.router = router;
-    console.log("UserService instantiation complete.");
-  }
-
-  render = () => {
-    console.log("Rendering RegisterComponent template...");
-    PAGE_BODY.innerHTML = this.template;
-    document.getElementById("register-account").addEventListener("click", this.register);
-    document.getElementById("back-to-login").addEventListener("click", this.router.fetchComponent("login").render);
-    console.log("Rendering complete.");
-  }
-
-  register = () => {
-    let newUser = {
-      username: document.getElementById("username-input").value,
-      password: document.getElementById("password-input").value,
-      firstName: document.getElementById("first-name-input").value,
-      lastName: document.getElementById("last-name-input").value,
-      email: document.getElementById('email-input').value
+    constructor(userService, router) {
+        console.log("Intantiating UserService...");
+        this.userService = userService;
+        this.router = router;
+        console.log("UserService instantiation complete.");
     }
-    let registeredUser = this.userService.register(newUser);
 
-    if(registeredUser) {
-        console.log("Registration successful");
-        this.router.fetchComponent("login").render();
-    } else {
-        console.log("Registration unsuccessful");
+    render = () => {
+        console.log("Rendering RegisterComponent template...");
+        PAGE_BODY.innerHTML = this.template;
+        document.getElementById("register-account").addEventListener("click", this.register);
+        document.getElementById("back-to-login").addEventListener("click", this.router.fetchComponent("login").render);
+        console.log("Rendering complete.");
     }
-  }
+
+    register = () => {
+        let newUser = {
+            username: document.getElementById("username-input").value,
+            password: document.getElementById("password-input").value,
+            firstName: document.getElementById("first-name-input").value,
+            lastName: document.getElementById("last-name-input").value,
+            email: document.getElementById('email-input').value
+        }
+        let registeredUser = this.userService.register(newUser);
+
+        if (registeredUser) {
+            console.log("Registration successful");
+            this.router.fetchComponent("login").render();
+        } else {
+            console.log("Registration unsuccessful");
+        }
+    }
 }
 
 class FinanceManagerComponent {
 
-  template = `
+    template = `
   <table class="table table-hover">
   <thead>
     <tr>
@@ -330,25 +298,181 @@ class FinanceManagerComponent {
 </table>
   `;
 
-  render = () => {
-    console.log("Rendering the FinanceManagerComponent template...");
-    PAGE_BODY.innerHTML = this.template;
-  }
-  
-  constructor(userService, router) {
-    console.log("Intantiating UserService...");
-    this.userService = userService;
-    this.router = router;
-    console.log("UserService instantiation complete.");
-  }
+    render = () => {
+        console.log("Rendering the FinanceManagerComponent template...");
+        PAGE_BODY.innerHTML = this.template;
+    }
 
-  render = () => {
-    console.log("Rendering RegisterComponent template...");
-    PAGE_BODY.innerHTML = this.template;
-    document.getElementById("register-account").addEventListener("click", this.register);
-    document.getElementById("back-to-login").addEventListener("click", this.router.fetchComponent("login").render);
-    console.log("Rendering complete.");
-  }
+    constructor(userService, router) {
+        console.log("Intantiating UserService...");
+        this.userService = userService;
+        this.router = router;
+        console.log("UserService instantiation complete.");
+    }
+
+    render = () => {
+        console.log("Rendering RegisterComponent template...");
+        PAGE_BODY.innerHTML = this.template;
+        document.getElementById("register-account").addEventListener("click", this.register);
+        document.getElementById("back-to-login").addEventListener("click", this.router.fetchComponent("login").render);
+        console.log("Rendering complete.");
+    }
+}
+
+
+class RegistrationComponent {
+
+    template = `
+      <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">First</th>
+          <th scope="col">Last</th>
+          <th scope="col">Handle</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">1</th>
+          <td>Mark</td>
+          <td>Otto</td>
+          <td>@mdo</td>
+          <td>
+                  <button type="button" class="btn btn-outline-success">Approve</button>
+              </td>
+          <td>
+                  <button type="button" class="btn btn-outline-danger">Deny</button>
+              </td>
+        </tr>
+        <tr>
+          <th scope="row">2</th>
+          <td>Jacob</td>
+          <td>Thornton</td>
+          <td>@fat</td>
+        </tr>
+        <tr>
+          <th scope="row">3</th>
+          <td colspan="2">Larry the Bird</td>
+          <td>@twitter</td>
+        </tr>
+      </tbody>
+    </table>
+      `;
+    
+        render = () => {
+            console.log("Rendering the FinanceManagerComponent template...");
+            PAGE_BODY.innerHTML = this.template;
+        }
+    
+        constructor(userService, router) {
+            console.log("Intantiating UserService...");
+            this.userService = userService;
+            this.router = router;
+            console.log("UserService instantiation complete.");
+        }
+    
+        render = () => {
+            console.log("Rendering RegisterComponent template...");
+            PAGE_BODY.innerHTML = this.template;
+            document.getElementById("register-account").addEventListener("click", this.register);
+            document.getElementById("back-to-login").addEventListener("click", this.router.fetchComponent("login").render);
+            console.log("Rendering complete.");
+        }
+    }
+
+class ReimbursementsComponent {
+
+    template = `
+    <div class="cotainer">
+
+    <br>
+
+    <br>
+        
+    <h1 class="text-center">????????</h1>
+        
+    <br>
+        
+    <h6 class="text-center">??????????</h6>
+        
+    <br>
+        
+    <br>
+    
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">Create New Reimbursement</div>
+                <div class="card-body">
+
+                    <div class="form-group row">
+                        
+                        <label for="Amount">Amount</label>
+                        <input type="text" class="form-control" class="col-md-4 col-form-label text-md-right" id="reim-amount"
+                            name="amount" placeholder="Enter total expenses for this request.">
+                    </div>
+                    <hr />
+                    <div class="form-group row">
+                        
+                        <label for="description">Description</label>
+                        <textarea class="form-control" id="reim-description" name="description" rows="5" placeholder="Please describe expenses in 10 to 250 characters."></textarea>
+                    </div>
+                    <hr />
+                    <div class="form-group row">
+                        
+                        <label for="type">Type of Expense</label>
+                        <select class="form-control" class="col-md-4 col-form-label text-md-right" id="reim-type"
+                            name="type">
+                            <option value="lodging">Lodging</option>
+                            <option value="travel">Travel</option>
+                            <option value="food">Food</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <hr />
+                    <div class="col-md-6 offset-md-4">
+                        <button id="register-reimbursement" class="btn btn-primary">
+                            Submit New Reimbursement Request
+                        </button>
+                        <br>
+                        <h5 class="btn btn-link"><a id="back-to-dashboard">Back to Dashboard</a></h5>
+                    </div>
+
+                    <div>
+                        <div class="alert alert-danger text-center" id="alert-msg-reimbursement" role="alert">
+                            Please fill all fields.
+                        </div>
+                        <div class="text-center" id="reimbursement-success" role="alert">
+                            Submission successful. Redirecting to your Dashboard.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>    
+        `;
+    
+    // render = () => {
+    //     console.log("Rendering the FinanceManagerComponent template...");
+    //     PAGE_BODY.innerHTML = this.template;
+    // }
+
+    constructor(userService, router) {
+        console.log("Intantiating UserService...");
+        this.userService = userService;
+        this.router = router;
+        console.log("UserService instantiation complete.");
+    }
+
+    render = () => {
+        console.log("Rendering RegisterComponent template...");
+        PAGE_BODY.innerHTML = this.template;
+        document.getElementById("register-account").addEventListener("click", this.register);
+        document.getElementById("back-to-login").addEventListener("click", this.router.fetchComponent("login").render);
+        console.log("Rendering complete.");
+    }
 }
 
 class EmployeeComponent {
@@ -373,7 +497,7 @@ class EmployeeComponent {
     <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
         <ul class="nav nav-pills nav-stacked" style="border-right:1px solid rgb(140, 145, 146)">
             <!--<li class="nav-header"></li>-->
-            <li><a id= "new-reim-request"><i class="fa fa-tags" class="pointer" ></i> Create New Reimbursement</a></li>
+            <li><a id= "new-reim-request">Create New Reimbursement</a></li>
             <li><a id = "logout-again"><i class="fa fa-lock" class="pointer"></i> Logout</a></li>
         </ul>
     </div><!-- /span-3 -->
@@ -405,8 +529,14 @@ class EmployeeComponent {
     render = () => {
         console.log("Rendering the EmployeeComponent template...");
         PAGE_BODY.innerHTML = this.template;
+        document.getElementById("new-reim-request").addEventListener("click", this.router.fetchComponent("Reimbursements").render);
+    }
 
-      
+    constructor(ReimbService, router) {
+        console.log("Intantiating UserService...");
+        this.ReimbService = ReimbService;
+        this.router = router;
+        console.log("UserService instantiation complete.");
     }
 
     getReimbursements = async () => {
@@ -419,7 +549,7 @@ class EmployeeComponent {
         });
 
         for (let reimbs = 0; reimbs < response.principal.length; reimbs++) {
-            
+
         }
     }
 }
@@ -430,119 +560,120 @@ class EmployeeComponent {
 
 class UserService {
 
-  currentUser;
+    currentUser;
 
-  constructor() {
-      console.log('Instantiating UserService...');
-      this.currentUser = new User();
-      console.log('UserService instantiation complete.');
-  }
+    constructor() {
+        console.log('Instantiating UserService...');
+        this.currentUser = new User();
+        console.log('UserService instantiation complete.');
+    }
 
-  getAll = async () => {
-    let response = await fetch("users", {
-        method: "GET",
-        headers: {
-            "Principal" : localStorage.getItem("jwt")
-        }
-    })
-  }
+    getAll = async () => {
+        let response = await fetch("users", {
+            method: "GET",
+            headers: {
+                "Principal": localStorage.getItem("jwt")
+            }
+        })
+    }
 
-//////////////////////////////////////// TO DO ////////////////////////////////////////////////////////////////////
-  getById = async (id) => {
-      console.log('UserService.getById() not implemented');
-  }
+    //////////////////////////////////////// TO DO ////////////////////////////////////////////////////////////////////
+    getById = async (id) => {
+        console.log('UserService.getById() not implemented');
+    }
 
-  getByUsername = async (username) => {
-      console.log('UserService.getByUsername() not implemented');
-  }
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  register = async (newUser) => {
-      let response = await fetch('register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newUser)
-      });
+    getByUsername = async (username) => {
+        console.log('UserService.getByUsername() not implemented');
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    register = async (newUser) => {
+        let response = await fetch('register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newUser)
+        });
 
-      
-  }
 
+    }
 }
 
 class AuthService {
 
-  currentUser;
+    currentUser;
 
-  constructor() {
-      console.log('Instantiating AuthService...');
-      this.currentUser = new User();
-      console.log('AuthService instantiation complete.');
-  }
+    constructor() {
+        console.log('Instantiating AuthService...');
+        this.currentUser = new User();
+        console.log('AuthService instantiation complete.');
+    }
 
-  authenticate = async (username, password) => {
-      let credentials = {
-          username: username,
-          password: password
-      }
+    authenticate = async (username, password) => {
+        let credentials = {
+            username: username,
+            password: password
+        }
 
-      let response = await fetch('auth', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(credentials)
-      }).catch(err => {
-          console.log("[ERROR] - Authentication unsuccessful")
-      });
+        let response = await fetch('auth', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(credentials)
 
-      localStorage.setItem("jwt", response.headers.get("Principal"));
+        }).catch(err => {
+            console.log("[ERROR] - Authentication unsuccessful")
+        });
 
-      let data = await response.json();
-      this.currentUser = data;
+        localStorage.setItem("jwt", response.headers.get("Authorization"));
 
-      return data;
+        let data = await response.json();
+        this.currentUser = data;
 
-      logout = () => {
-          localStorage.removeItem("jwt");
-      }
-  }
+        return data;
+    
+        }
+
+        logout = () => {
+            localStorage.removeItem("jwt");
+    }
 }
 
 //------------------------------------------------------------------------
 
 class ReimbService {
 
-  currentUser;
+    currentUser;
 
-  constructor() {
-      console.log('Instantiating UserService...');
-      this.currentUser = new User();
-      console.log('UserService instantiation complete.');
-  }
+    constructor() {
+        console.log('Instantiating UserService...');
+        this.currentUser = new User();
+        console.log('UserService instantiation complete.');
+    }
 
-  getAll = async () => {
-    let response = await fetch("users", {
-        method: "GET",
-        headers: {
-            "Principal" : localStorage.getItem("jwt")
-        }
-    })
-  }
+    getAll = async () => {
+        let response = await fetch("users", {
+            method: "GET",
+            headers: {
+                "Principal": localStorage.getItem("jwt")
+            }
+        })
+    }
 
-  getById = async (id) => {
-      console.log('UserService.getById() not implemented');
-  }
+    getById = async (id) => {
+        console.log('UserService.getById() not implemented');
+    }
 
-  getByUsername = async (username) => {
-      console.log('UserService.getByUsername() not implemented');
-  }
+    getByUsername = async (username) => {
+        console.log('UserService.getByUsername() not implemented');
+    }
 
-  register = async (newUser) => {
-      let response = await fetch('register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newUser)
-      });
+    register = async (newUser) => {
+        let response = await fetch('register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newUser)
+        });
 
-      
-  }
+
+    }
 
 }
 //------------------------------------------------------------------------
@@ -550,23 +681,24 @@ class ReimbService {
 // Router
 
 class Router {
-	routes = [];
-	
-	constructor() {
-		console.log("Instantiating Router...")
-		console.log("Router instantiation complete.")
-	}
-	
-	addRoute = (path, component) => {  // the object in parameters is basically a route
-		this.routes.push({path, component});
-		
-	}
-	
-	fetchComponent = (path) => {
-		// if the route's path is equal to the path we want, then pop off that route object 
-		let destinationRoute = this.routes.filter(route => route.path === path).pop(); 
-		return destinationRoute.component;
-	}
+    routes = [];
+
+    constructor() {
+        console.log("Instantiating Router...")
+        console.log("Router instantiation complete.")
+    }
+
+    addRoute = (path, component) => {  // the object in parameters is basically a route
+        this.routes.push({ path, component });
+
+    }
+
+    fetchComponent = (path) => {
+        // if the route's path is equal to the path we want, then pop off that route object 
+        console.log('fetching component  ' + path)
+        let destinationRoute = this.routes.filter(route => route.path === path).pop();
+        return destinationRoute.component;
+    }
 }
 //------------------------------------------------------------------------
 
@@ -576,26 +708,26 @@ class Router {
 // Models
 
 class User {
-  constructor(userId, username, password, firstName, lastName, email, roleId) {
-    this.userId = userId;
-    this.username = username;
-    this.password = password;  
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.email = email;
-    this.roleId = roleId;
-  }
+    constructor(userId, username, password, firstName, lastName, email, roleId) {
+        this.userId = userId;
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.roleId = roleId;
+    }
 }
 
 // Function to make navbar responsive
 function mobileMenu() {
     const TOP_NAV = document.getElementById("top-nav");
     if (TOP_NAV.className === "top-nav") {
-      TOP_NAV.className += " responsive";
+        TOP_NAV.className += " responsive";
     } else {
-      TOP_NAV.className = "top-nav";
+        TOP_NAV.className = "top-nav";
     }
-  }
+}
 
 
 

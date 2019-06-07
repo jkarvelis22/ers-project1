@@ -127,13 +127,12 @@ public class LoginServlet extends HttpServlet {
 			 * 		session.invalidate();
 			 */
 			
-			String token = JwtGenerator.createJwt(authUser);
 			
 			/*
 			 * Add the token to the response within an Authorization header if storing the token in
 			 * localStorage on the client-side (vulnerable to XSS)
 			 */
-			response.addHeader(JwtConfig.HEADER, JwtConfig.PREFIX + token);
+			
 			
 		} catch (MismatchedInputException mie) {
 		//	log.error(mie.getMessage());
