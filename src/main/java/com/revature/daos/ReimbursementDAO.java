@@ -25,7 +25,7 @@ public class ReimbursementDAO implements DAO<Reimbursement> {
 	public List<Reimbursement> getAll() {
 		j.info("ReimbursementDAO.getAll()");
 		
-List<Reimbursement> reimbursements = new ArrayList<>();
+		List<Reimbursement> reimbursements = new ArrayList<>();
 
 		try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
 			j.info("ReimbursementDAO.getAll() : Variable == False : Try catch block entered.");
@@ -145,6 +145,54 @@ List<Reimbursement> reimbursements = new ArrayList<>();
 		return newReimbursement;
 	}
 	
+//	@Override
+//	public Reimbursement update(Reimbursement updatedReimbursement) {
+//		j.info("ReimbursementDAO.update(" + updatedReimbursement + ")");
+//		
+//		try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
+//			j.info("ReimbursementDAO.update(" + updatedReimbursement + ") : Variable == False : Else block entered.");
+//			conn.setAutoCommit(false);
+//			
+//			String sql = "UPDATE ers_reimbursement SET reimb_amount = ?, reimb_resolved = ?, reimb_description = ?, reimb_resolver = ?, reimb_status_id = ?, reimb_type_id = ? WHERE reimb_id = ?";
+//			
+//			
+//			PreparedStatement pstmt = conn.prepareStatement(sql);
+//			System.out.println(updatedReimbursement.getAmount());
+//			pstmt.setDouble(1, updatedReimbursement.getAmount());
+//			
+//			System.out.println(updatedReimbursement.getResolved());
+//			pstmt.setString(2, updatedReimbursement.getResolved());
+//			
+//			System.out.println(updatedReimbursement.getDescription());
+//			pstmt.setString(3, updatedReimbursement.getDescription());
+//			
+//			
+//			System.out.println(updatedReimbursement.getResolver());
+//			pstmt.setInt(4, updatedReimbursement.getResolver());
+//			
+//			System.out.println(updatedReimbursement.getReimbStatus().getReimbStatusId());
+//			pstmt.setInt(5, updatedReimbursement.getReimbStatus().getReimbStatusId());
+//			
+//			System.out.println(updatedReimbursement.getReimbType().getReimbTypeId());
+//			pstmt.setInt(6, updatedReimbursement.getReimbType().getReimbTypeId());
+//			
+//			System.out.println(updatedReimbursement.getId());
+//			pstmt.setInt(7, updatedReimbursement.getId());
+//			
+//			pstmt.executeUpdate();
+//				conn.commit();
+//				j.info("ReimbursementDAO.update(" + updatedReimbursement + ") : VALUE was returned");
+//				return updatedReimbursement;
+//			
+//			} catch (SQLException e) {
+//				System.out.println(e.getMessage());
+//	//		log.error(e.getMessage());
+//		}
+//		j.info("ReimbursementDAO.update(" + updatedReimbursement + ") : VALUE was returned");
+//		return null;
+//	}
+	
+	//-------------------------------------------
 	@Override
 	public Reimbursement update(Reimbursement updatedReimbursement) {
 		j.info("ReimbursementDAO.update(" + updatedReimbursement + ")");
@@ -153,31 +201,20 @@ List<Reimbursement> reimbursements = new ArrayList<>();
 			j.info("ReimbursementDAO.update(" + updatedReimbursement + ") : Variable == False : Else block entered.");
 			conn.setAutoCommit(false);
 			
-			String sql = "UPDATE ers_reimbursement SET reimb_amount = ?, reimb_resolved = ?, reimb_description = ?, reimb_resolver = ?, reimb_status_id = ?, reimb_type_id = ? WHERE reimb_id = ?";
+			String sql = "UPDATE ers_reimbursement SET reimb_resolver = ?, reimb_status_id = ? WHERE reimb_id = ?";
 			
 			
 			PreparedStatement pstmt = conn.prepareStatement(sql);
-			System.out.println(updatedReimbursement.getAmount());
-			pstmt.setDouble(1, updatedReimbursement.getAmount());
-			
-			System.out.println(updatedReimbursement.getResolved());
-			pstmt.setString(2, updatedReimbursement.getResolved());
-			
-			System.out.println(updatedReimbursement.getDescription());
-			pstmt.setString(3, updatedReimbursement.getDescription());
 			
 			
 			System.out.println(updatedReimbursement.getResolver());
-			pstmt.setInt(4, updatedReimbursement.getResolver());
+			pstmt.setInt(1, updatedReimbursement.getResolver());
 			
 			System.out.println(updatedReimbursement.getReimbStatus().getReimbStatusId());
-			pstmt.setInt(5, updatedReimbursement.getReimbStatus().getReimbStatusId());
-			
-			System.out.println(updatedReimbursement.getReimbType().getReimbTypeId());
-			pstmt.setInt(6, updatedReimbursement.getReimbType().getReimbTypeId());
+			pstmt.setInt(2, updatedReimbursement.getReimbStatus().getReimbStatusId());
 			
 			System.out.println(updatedReimbursement.getId());
-			pstmt.setInt(7, updatedReimbursement.getId());
+			pstmt.setInt(3, updatedReimbursement.getId());
 			
 			pstmt.executeUpdate();
 				conn.commit();
@@ -191,6 +228,7 @@ List<Reimbursement> reimbursements = new ArrayList<>();
 		j.info("ReimbursementDAO.update(" + updatedReimbursement + ") : VALUE was returned");
 		return null;
 	}
+	//---------------------------------------------
 	
 	private List<Reimbursement> mapResultSet(ResultSet rs) throws SQLException {
 		j.info("ReimbursementDAO.mapResultSet(" + rs + ")");

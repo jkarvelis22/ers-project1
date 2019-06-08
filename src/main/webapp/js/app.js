@@ -8,10 +8,9 @@ window.onload = function () {
     const USER_SERVICE = new UserService();
     const ROUTER = new Router();
     const AUTH_SERVICE = new AuthService(ROUTER);
-    // const ReimbService = new ReimbService();
     const REIMB_SERVICE = new ReimbService();
 
-    const FINANCE_MANAGER_COMPONENT = new FinanceManagerComponent();
+    const FINANCE_MANAGER_COMPONENT = new FinanceManagerComponent(REIMB_SERVICE, ROUTER);
     const EMPLOYEE_COMPONENT = new EmployeeComponent(REIMB_SERVICE, ROUTER);
     const LOGIN_COMPONENT = new LoginComponent(AUTH_SERVICE, ROUTER);
     const REGISTER_COMPONENT = new RegisterComponent(USER_SERVICE, ROUTER);
@@ -86,16 +85,21 @@ class LoginComponent {
         let username = document.getElementById('username-cred').value;
         let password = document.getElementById('password-cred').value;
 
-        localStorage.setItem('principal', await this.authService.authenticate(username, password));
+        let principal = await this.authService.authenticate(username, password);
+        localStorage.setItem('principal', principal);
 
+        console.log('principalIs');
+        console.dir(principal);
+
+        if (principal.role == 'manager') {
+            this.router.fetchComponent('manager').render();
+        } else {
+            this.router.fetchComponent('employee').render();
+        }
 
         //   document.getElementById('alert-msg').setAttribute('hidden', true);
-        this.router.fetchComponent('employee').render();
-
     }
 }
-
-//   
 
 class NavbarComponent {
 
@@ -242,7 +246,7 @@ class RegisterComponent {
         console.log("Rendering complete.");
     }
 
-    register = () => {
+    register = async () => {
         let newUser = {
             username: document.getElementById("register-username").value,
             password: document.getElementById("register-password").value,
@@ -250,78 +254,166 @@ class RegisterComponent {
             lastName: document.getElementById("register-last-name").value,
             email: document.getElementById('register-email').value
         }
-        let registeredUser = this.userService.register(newUser);
+        let registeredUser = await this.userService.register(newUser);
 
         if (registeredUser) {
             console.log("Registration successful");
             this.router.fetchComponent("login").render();
         } else {
             console.log("Registration unsuccessful");
+            alert("unsuccessful");
         }
     }
 }
 
 class FinanceManagerComponent {
 
-    template = `
-  <table class="table table-hover">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">First</th>
-      <th scope="col">Last</th>
-      <th scope="col">Handle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
-      <td>
-              <button type="button" class="btn btn-outline-success">Approve</button>
-          </td>
-      <td>
-              <button type="button" class="btn btn-outline-danger">Deny</button>
-          </td>
-    </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>@fat</td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td colspan="2">Larry the Bird</td>
-      <td>@twitter</td>
-    </tr>
-  </tbody>
-</table>
-  `;
+    reimbursementsList = null;
 
-    render = () => {
-        console.log("Rendering the FinanceManagerComponent template...");
-        PAGE_BODY.innerHTML = this.template;
-    }
 
-    constructor(userService, router) {
+    // <div class="container">
+    //     <div class="row">
+    //         <table id="employee-reimbursements" class="table table-striped table-bordered"  cellspacing="5" width="100%">
+
+    template =
+
+
+        `
+    <div class="container">
+        <div class="row">
+            <table class="table table-hover">
+
+                <thead>
+                    <tr>
+                        <th scope="col">Emp ID</th>
+                        <th scope="col">Reimb ID</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Date Submitted</th>
+                        <th scope="col">Date Resolved</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Type</th>
+                    </tr>
+                </thead>
+
+                <tbody id="mgrtablebody">
+                   
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+<div>
+    <input type="number" id="txt-IDnum" class="insert txt-outline-row-EMPID" placeholder="Reimb ID">
+    <button type="button" id="approve-btn" class="btn btn-outline-success">Approve</button>
+    <button type="button" id="deny-btn" class="btn btn-outline-danger">Deny</button>
+</div>
+    `;
+
+    // render = () => {
+    //     console.log("Rendering the FinanceManagerComponent template...");
+    //     PAGE_BODY.innerHTML = this.template;
+    // }
+
+    constructor(ReimbService, router) {
         console.log("Intantiating UserService...");
-        this.userService = userService;
+        this.ReimbService = ReimbService;
         this.router = router;
         console.log("UserService instantiation complete.");
     }
 
-    render = () => {
+    render = async () => {
         console.log("Rendering RegisterComponent template...");
         PAGE_BODY.innerHTML = this.template;
-        document.getElementById("register-account").addEventListener("click", this.register);
-        document.getElementById("back-to-login").addEventListener("click", this.router.fetchComponent("login").render);
+        document.getElementById("approve-btn").addEventListener("click", this.apprclick);
+        document.getElementById("deny-btn").addEventListener("click", this.denclick);
+
+        this.reimbursementsList = await this.ReimbService.getAll();
+        for (let i = 0; i < this.reimbursementsList.length; i++) {
+            this.appendRow(this.reimbursementsList[i]);
+        }
         console.log("Rendering complete.");
     }
-}
 
+    apprclick = async () => {
+        let ID = document.getElementById("txt-IDnum").value;
+        console.log(ID + 'THE ID IS');
+        let updateTix = null;
+        for (let i = 0; i < this.reimbursementsList.length; i++) {
+            console.dir(this.reimbursementsList[i].id);
+            if (this.reimbursementsList[i].id == ID) {
+                updateTix = new Ticket(this.reimbursementsList[i].id, this.reimbursementsList[i].amount,
+                    this.reimbursementsList[i].submitted, this.reimbursementsList[i].resolved,
+                    this.reimbursementsList[i].description, this.reimbursementsList[i].receipt,
+                    this.reimbursementsList[i].author, currentUserId,
+                    new ReimbursementStatus(2), this.reimbursementsList[i].reimbType);
+                break;
+            }
+            else {
+                updateTix = null;
+            }
+        }
+
+        let returnedReimb = await this.ReimbService.update(updateTix);
+        console.log('RETURNED REIMB');
+        console.dir(returnedReimb);
+        this.render()
+        console.log("successful appr click");
+    }
+
+
+    denclick = async () => {
+        let ID = document.getElementById("txt-IDnum").value;
+        console.log(ID + 'THE ID IS');
+        let updateTix = null;
+        for (let i = 0; i < this.reimbursementsList.length; i++) {
+            console.dir(this.reimbursementsList[i].id);
+            if (this.reimbursementsList[i].id == ID) {
+                updateTix = new Ticket(this.reimbursementsList[i].id, this.reimbursementsList[i].amount,
+                    this.reimbursementsList[i].submitted, this.reimbursementsList[i].resolved,
+                    this.reimbursementsList[i].description, this.reimbursementsList[i].receipt,
+                    this.reimbursementsList[i].author, currentUserId,
+                    new ReimbursementStatus(3), this.reimbursementsList[i].reimbType);
+                break;
+            }
+            else {
+                updateTix = null;
+            }
+        }
+
+        let returnedReimb = await this.ReimbService.update(updateTix);
+        console.log('RETURNED REIMB');
+        console.dir(returnedReimb);
+        this.render()
+        console.log("successful appr click");
+    }
+    appendRow = async (reimb) => {
+        console.log('appending row');
+        console.dir(reimb);
+
+        //create a Table row element
+        let reimbRow = document.createElement("tr");
+
+        //insert HTML data cells into row
+        let rowTemplate =
+            `           
+            <td>${reimb.author}</td>
+            <td>${reimb.id}</td>
+            <td>${reimb.amount}</td>
+            <td>${reimb.submitted}</td>
+            <td>${reimb.resolved}</td>
+            <td>${reimb.description}</td>
+            <td>${reimb.reimbStatus.reimbStatusName}</td>
+            <td>${reimb.reimbType.reimbTypeName}</td>`;
+
+        //Insert into row
+        reimbRow.innerHTML = rowTemplate
+
+        //Append child row into table element
+        let bodyElement = document.getElementById("mgrtablebody")
+        bodyElement.appendChild(reimbRow);
+    }
+}
 
 class RegistrationComponent {
 
@@ -479,7 +571,7 @@ class ReimbursementsComponent {
     }
 
     createR = async () => {
-        
+
         let TypeId = 0;
         switch (document.getElementById('reim-type').value) {
             case 'lodging': TypeId = 1;
@@ -511,14 +603,14 @@ class ReimbursementsComponent {
                 reimbTypeName: document.getElementById('reim-type').value
             }
         }
-            
-        
+
+
         console.log('Submitting reimbursement');
         console.dir(newR);
         let rr = await this.ReimbService.register(newR);
         console.log('received reimb');
         console.dir(rr);
-        if(rr)
+        if (rr)
             this.router.fetchComponent("employee").render();
 
     }
@@ -559,6 +651,7 @@ class EmployeeComponent {
                 <table id="employee-reimbursements" class="table table-striped table-bordered"  cellspacing="5" width="100%">
                    
                     <tr>
+                        <th>Emp ID</th>
                         <th>Reimb ID</th>
                         <th>Amount</th>
                         <th>Date Submitted</th>
@@ -591,25 +684,27 @@ class EmployeeComponent {
     }
 
     createTable = async () => {
-console.log('rendering table');
-      let reimbursements = await this.ReimbService.getById(currentUserId);
-      for(let i = 0; i < reimbursements.length; i++){
-    this.appendRow(reimbursements[i]);
-  } 
-console.dir(reimbursements);
+        console.log('rendering table');
+        let reimbursements = await this.ReimbService.getById(currentUserId);
+        for (let i = 0; i < reimbursements.length; i++) {
+            this.appendRow(reimbursements[i]);
+        }
+        console.dir(reimbursements);
     }
 
 
     appendRow = async (reimb) => {
         console.log('PASSED INTO THE REIMB');
-            console.dir(reimb);
+        console.dir(reimb);
 
-            //create a Table row element
-            let reimbRow = document.createElement("tr");
-        
-            //insert HTML data cells into row
-            let rowTemplate = 
-            `<td>${reimb.id}</td>
+        //create a Table row element
+        let reimbRow = document.createElement("tr");
+
+        //insert HTML data cells into row
+        let rowTemplate =
+            `           
+            <td>${reimb.author}</td>
+            <td>${reimb.id}</td>
             <td>${reimb.amount}</td>
             <td>${reimb.submitted}</td>
             <td>${reimb.resolved}</td>
@@ -617,12 +712,12 @@ console.dir(reimbursements);
             <td>${reimb.reimbStatus.reimbStatusName}</td>
             <td>${reimb.reimbType.reimbTypeName}</td>`;
 
-            //Insert into row
-            reimbRow.innerHTML = rowTemplate
-    
-            //Append child row into table element
-           let tableElement = document.getElementById("employee-reimbursements") 
-           tableElement.appendChild(reimbRow);
+        //Insert into row
+        reimbRow.innerHTML = rowTemplate
+
+        //Append child row into table element
+        let tableElement = document.getElementById("employee-reimbursements")
+        tableElement.appendChild(reimbRow);
 
 
     }
@@ -675,11 +770,14 @@ class UserService {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     register = async (newUser) => {
 
-        let response = await fetch('register', {
+        let response = await fetch('users', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newUser)
         });
+
+        let reg = await response.json();
+        return reg;
 
 
     }
@@ -739,12 +837,14 @@ class ReimbService {
     }
 
     getAll = async () => {
-        let response = await fetch("users", {
-            method: "GET",
-            headers: {
-                "Principal": localStorage.getItem("jwt")
-            }
-        })
+        console.log('attempting to get reimbursements');
+        let response = await fetch('finance', {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+
+        });
+        let reimbList = await response.json();
+        return reimbList;
     }
 
     getById = async (id) => {
@@ -753,7 +853,7 @@ class ReimbService {
         let response = await fetch('employee?author=' + id, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
-        
+
         });
         let reimbList = await response.json();
         return reimbList;
@@ -774,11 +874,21 @@ class ReimbService {
         });
         let createdReimb = await response.json();
         return createdReimb;
-
-
     }
 
+    update = async (reimb) => {
+        console.log('DSGVHGDEHJEVD^&&#^&#%^(@EE#*&');
+        console.dir(reimb);
+        let response = await fetch('finance', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(reimb)
+        });
+        let createdReimb = await response.json();
+        return createdReimb;
+    }
 }
+
 //------------------------------------------------------------------------
 
 // Router
@@ -832,6 +942,42 @@ function mobileMenu() {
     }
 }
 
+class Ticket {
+    constructor(id, amount, submitted, resolved, description, receipt, author, resolver, reimbStatus, reimbType) {
+
+        this.id = id;
+        this.amount = amount;
+        this.submitted = submitted;
+        this.resolved = resolved;
+        this.description = description;
+        this.receipt = receipt;
+        this.author = author;
+        this.resolver = resolver;
+        this.reimbStatus = reimbStatus;
+        this.reimbType = reimbType;
+    }
 
 
 
+}
+
+class ReimbursementStatus {
+    constructor(reimbStatusId) {
+        switch (reimbStatusId) {
+            case 1:
+                this.reimbStatusId = 1;
+                this.reimbStatusName = 'pending';
+                break;
+            case 2:
+                this.reimbStatusId = 2;
+                this.reimbStatusName = 'approved';
+                break;
+            case 3:
+                this.reimbStatusId = 3;
+                this.reimbStatusName = 'denied';
+                break;
+        }
+
+    }
+
+}

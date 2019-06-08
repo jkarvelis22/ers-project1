@@ -19,3 +19,7 @@ select.form-control:not([size]):not([multiple]) {
 tr:nth-child(even) {
 background-color: #f2f2f2
 }
+
+#table-move{
+    margin: 10rem 5rem;
+    }

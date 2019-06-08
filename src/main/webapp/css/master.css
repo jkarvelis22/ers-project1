@@ -28,9 +28,13 @@ tr:nth-child(even) {
     color: darkgreen;
     transition: all .5s ease;
     cursor: pointer;
+
 }
 #logout-again:hover {
     color: darkgreen;
     transition: all .5s ease;
     cursor: pointer;
+}
+#table-move{
+margin: 10rem 5rem;
 }
