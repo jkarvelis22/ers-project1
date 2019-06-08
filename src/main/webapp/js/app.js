@@ -4,15 +4,15 @@ const DYNAMIC_CSS = document.getElementById('dynamic-css');
 let currentUserId = null;
 
 window.onload = function () {
-    console.log("Beginning to render the page 2");
+    console.log("Beginning to render the page 3");
     const USER_SERVICE = new UserService();
     const ROUTER = new Router();
     const AUTH_SERVICE = new AuthService(ROUTER);
-  //  const ReimbService = new ReimbService();
-  const REIMB_SERVICE = new ReimbService();
+    // const ReimbService = new ReimbService();
+    const REIMB_SERVICE = new ReimbService();
 
     const FINANCE_MANAGER_COMPONENT = new FinanceManagerComponent();
-    const EMPLOYEE_COMPONENT = new EmployeeComponent(ReimbService, ROUTER);
+    const EMPLOYEE_COMPONENT = new EmployeeComponent(REIMB_SERVICE, ROUTER);
     const LOGIN_COMPONENT = new LoginComponent(AUTH_SERVICE, ROUTER);
     const REGISTER_COMPONENT = new RegisterComponent(USER_SERVICE, ROUTER);
     const NAVBAR_COMPONENT = new NavbarComponent(ROUTER);
@@ -362,27 +362,27 @@ class RegistrationComponent {
       </tbody>
     </table>
       `;
-    
-        render = () => {
-            console.log("Rendering the FinanceManagerComponent template...");
-            PAGE_BODY.innerHTML = this.template;
-        }
-    
-        constructor(userService, router) {
-            console.log("Intantiating UserService...");
-            this.userService = userService;
-            this.router = router;
-            console.log("UserService instantiation complete.");
-        }
-    
-        render = () => {
-            console.log("Rendering RegisterComponent template...");
-            PAGE_BODY.innerHTML = this.template;
-            document.getElementById("register-account").addEventListener("click", this.register);
-            document.getElementById("back-to-login").addEventListener("click", this.router.fetchComponent("login").render);
-            console.log("Rendering complete.");
-        }
+
+    render = () => {
+        console.log("Rendering the FinanceManagerComponent template...");
+        PAGE_BODY.innerHTML = this.template;
     }
+
+    constructor(userService, router) {
+        console.log("Intantiating UserService...");
+        this.userService = userService;
+        this.router = router;
+        console.log("UserService instantiation complete.");
+    }
+
+    render = () => {
+        console.log("Rendering RegisterComponent template...");
+        PAGE_BODY.innerHTML = this.template;
+        document.getElementById("register-account").addEventListener("click", this.register);
+        document.getElementById("back-to-login").addEventListener("click", this.router.fetchComponent("login").render);
+        console.log("Rendering complete.");
+    }
+}
 
 class ReimbursementsComponent {
 
@@ -456,7 +456,7 @@ class ReimbursementsComponent {
     </div>
     </div>    
         `;
-    
+
     // render = () => {
     //     console.log("Rendering the FinanceManagerComponent template...");
     //     PAGE_BODY.innerHTML = this.template;
@@ -479,63 +479,48 @@ class ReimbursementsComponent {
     }
 
     createR = async () => {
-        console.log('value is' + document.getElementById('reim-type').value)
+        
         let TypeId = 0;
-switch (document.getElementById('reim-type').value){
-    case 'lodging': TypeId = 1;
-    break;
-    case 'travel':  TypeId = 2;
-        break;
-        case 'food' :  TypeId = 3;
-        break;
-        case 'other' :  TypeId = 4;
-            break;
-    
-}
+        switch (document.getElementById('reim-type').value) {
+            case 'lodging': TypeId = 1;
+                break;
+            case 'travel': TypeId = 2;
+                break;
+            case 'food': TypeId = 3;
+                break;
+            case 'other': TypeId = 4;
+                break;
+
+        }
         let newR = {
             id: 0,
             amount: document.getElementById('reim-amount').value,
-            submitted: null,
-            resolved: null,
+            submitted: "06/10/19",
+            resolved: "N/A",
             description: document.getElementById('reim-description').value,
             receipt: null,
             author: currentUserId,
             resolver: 1,
             reimbStatus: {
-                reimbStatusId : 1,
+                reimbStatusId: 1,
                 reimbStatusName: 'pending'
-                
+
             },
             reimbType: {
-                reimbTypeId : TypeId,
-                reimbTypeName : document.getElementById('reim-type').value
+                reimbTypeId: TypeId,
+                reimbTypeName: document.getElementById('reim-type').value
             }
-            // rType: document.getElementById('reim-type').value
-            // {
-            //     "id": 22,
-            //     "amount" : 400,
-            //     "submitted" : "yes",
-            //     "resolved" : "N/A",
-            //     "description" : "Went to Ireland",
-            //     "receipt" : null,
-            //     "author" : 4,
-            //     "resolver" : 2,
-            //      "reimbStatus": {
-            //             "reimbStatusId": 1,
-            //             "reimbStatusName": "pending"
-            //      },
-            //         "reimbType": {
-            //             "reimbTypeId": 1,
-            //             "reimbTypeName": "food"
-            
-            //         }
-            
-            // }
         }
+            
+        
+        console.log('Submitting reimbursement');
+        console.dir(newR);
         let rr = await this.ReimbService.register(newR);
-console.dir(rr);
-    
-       
+        console.log('received reimb');
+        console.dir(rr);
+        if(rr)
+            this.router.fetchComponent("employee").render();
+
     }
 }
 
@@ -572,17 +557,17 @@ class EmployeeComponent {
         <div class="container">
             <div class="row">
                 <table id="employee-reimbursements" class="table table-striped table-bordered"  cellspacing="5" width="100%">
-                    <thead >
-                        <tr>
-                            <th>Reimb ID</th>
-                            <th>Amount</th>
-                            <th>Date Submitted</th>
-                            <th>Date Resolved</th>
-                            <th>Description</th>
-                            <th>Status</th>
-                            <th>Type</th>
-                        </tr>
-                    </thead>
+                   
+                    <tr>
+                        <th>Reimb ID</th>
+                        <th>Amount</th>
+                        <th>Date Submitted</th>
+                        <th>Date Resolved</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Type</th>
+                    </tr>
+                    
                 </table>
             </div>
         </div>
@@ -595,6 +580,7 @@ class EmployeeComponent {
         PAGE_BODY.innerHTML = this.template;
         document.getElementById("new-reim-request").addEventListener("click", this.router.fetchComponent("Reimbursements").render);
         document.getElementById("logout-again").addEventListener("click", this.router.fetchComponent("Reimbursements").render);
+        this.createTable();
     }
 
     constructor(ReimbService, router) {
@@ -604,6 +590,42 @@ class EmployeeComponent {
         console.log("UserService instantiation complete.");
     }
 
+    createTable = async () => {
+console.log('rendering table');
+      let reimbursements = await this.ReimbService.getById(currentUserId);
+      for(let i = 0; i < reimbursements.length; i++){
+    this.appendRow(reimbursements[i]);
+  } 
+console.dir(reimbursements);
+    }
+
+
+    appendRow = async (reimb) => {
+        console.log('PASSED INTO THE REIMB');
+            console.dir(reimb);
+
+            //create a Table row element
+            let reimbRow = document.createElement("tr");
+        
+            //insert HTML data cells into row
+            let rowTemplate = 
+            `<td>${reimb.id}</td>
+            <td>${reimb.amount}</td>
+            <td>${reimb.submitted}</td>
+            <td>${reimb.resolved}</td>
+            <td>${reimb.description}</td>
+            <td>${reimb.reimbStatus.reimbStatusName}</td>
+            <td>${reimb.reimbType.reimbTypeName}</td>`;
+
+            //Insert into row
+            reimbRow.innerHTML = rowTemplate
+    
+            //Append child row into table element
+           let tableElement = document.getElementById("employee-reimbursements") 
+           tableElement.appendChild(reimbRow);
+
+
+    }
     getReimbursements = async () => {
         let response = await fetch('employee', {
             method: 'GET',
@@ -652,7 +674,7 @@ class UserService {
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     register = async (newUser) => {
-    
+
         let response = await fetch('register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -694,13 +716,13 @@ class AuthService {
         this.currentUser = data;
         currentUserId = data.id;
         console.log('RECEIVED A RESPONSE');
-console.dir(data);
+        console.dir(data);
         return data;
-    
-        }
 
-        logout = () => {
-            localStorage.removeItem("jwt");
+    }
+
+    logout = () => {
+        localStorage.removeItem("jwt");
     }
 }
 
@@ -726,7 +748,16 @@ class ReimbService {
     }
 
     getById = async (id) => {
-        console.log('UserService.getById() not implemented');
+        console.log('attempting to get reimbursements');
+        console.dir(id);
+        let response = await fetch('employee?author=' + id, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        
+        });
+        let reimbList = await response.json();
+        return reimbList;
+
     }
 
     getByUsername = async (username) => {

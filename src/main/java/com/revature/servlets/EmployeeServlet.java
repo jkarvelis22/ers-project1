@@ -28,9 +28,11 @@ import com.revature.utils.Josh4J;
 		protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 			j.info("EmployeeServlet.doGet(" + request + "," + response + ")");
 			PrintWriter writer = response.getWriter();
-			User user = new User();
-			user.setId(5);
-			List<Reimbursement> userReimb = reimbService.getByAuthor(5);
+//			User user = new User();
+//			user.setId(5);
+			String author = request.getParameter("author"); 
+			int authorId = Integer.parseInt(author);
+			List<Reimbursement> userReimb = reimbService.getByAuthor(authorId);
 			ObjectMapper mapper = new ObjectMapper();
 			
 			String userReimbs = mapper.writeValueAsString(userReimb);
