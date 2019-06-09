@@ -1,0 +1,44 @@
+nav{
+
+background-color: rgb(127, 193, 255) !important;
+
+}
+
+#ERSlogo {
+    width: 40px;
+
+}
+
+#to-dashboard {
+
+    font-size: 1.5em;
+}
+
+#login-box{
+
+    border: 4px solid rgb(127, 193, 255);
+    text-align: center;
+    margin: 15vh auto;
+    min-width: 300px;
+    max-width: 500px;
+}
+
+#loginview{
+
+    margin: 25px;
+
+}
+
+#register-account, #back-to-login {
+
+    margin-left: 90%;
+
+}
+#new-reim-request {
+
+   margin-top: 50px;
+}
+#Mgrspace {
+
+    margin-left: -5px;
+}

@@ -4,7 +4,7 @@ const DYNAMIC_CSS = document.getElementById('dynamic-css');
 let currentUserId = null;
 
 window.onload = function () {
-    console.log("Beginning to render the page 5");
+    console.log("Beginning to render the page 3");
     const USER_SERVICE = new UserService();
     const ROUTER = new Router();
     const AUTH_SERVICE = new AuthService(ROUTER);
@@ -273,39 +273,39 @@ class FinanceManagerComponent {
 
         `
         <div class="container">
-        <br>
-        <br>
+                <br>
+                <br>
 
-        <h3 id="Mgrspace"><strong>Manager's Reimbursement Portal</strong></h3>
-        <br>
-        <div class="row">
-            <table class="table table-hover">
+                <h3 id="Mgrspace"><strong>Manager's Reimbursement Portal</strong></h3>
+                <br>
+                <div class="row">
+                    <table class="table table-hover">
 
-                <thead>
-                    <tr>
-                        <th scope="col">Emp ID</th>
-                        <th scope="col">Reimb ID</th>
-                        <th scope="col">Amount</th>
-                        <th scope="col">Date Submitted</th>
-                        <th scope="col">Date Resolved</th>
-                        <th scope="col">Description</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Type</th>
-                    </tr>
-                </thead>
+                        <thead>
+                            <tr>
+                                <th scope="col">Emp ID</th>
+                                <th scope="col">Reimb ID</th>
+                                <th scope="col">Amount</th>
+                                <th scope="col">Date Submitted</th>
+                                <th scope="col">Date Resolved</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Type</th>
+                            </tr>
+                        </thead>
 
-                <tbody id="mgrtablebody">
+                        <tbody id="mgrtablebody">
 
-                </tbody>
+                        </tbody>
 
-            </table>
-        </div>
-    </div>
-    <div>
-        <input type="number" id="txt-IDnum" class="insert txt-outline-row-EMPID" placeholder="Reimb ID">
-        <button type="button" id="approve-btn" class="btn btn-outline-success">Approve</button>
-        <button type="button" id="deny-btn" class="btn btn-outline-danger">Deny</button>
-    </div>
+                    </table>
+                </div>
+            </div>
+            <div>
+                <input type="number" id="txt-IDnum" class="insert txt-outline-row-EMPID" placeholder="Reimb ID">
+                <button type="button" id="approve-btn" class="btn btn-outline-success">Approve</button>
+                <button type="button" id="deny-btn" class="btn btn-outline-danger">Deny</button>
+            </div>
     `;
 
     // render = () => {
@@ -416,41 +416,41 @@ class FinanceManagerComponent {
 class RegistrationComponent {
 
     template = `
-    <table class="table table-hover">
-    <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">First</th>
-        <th scope="col">Last</th>
-        <th scope="col">Handle</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th scope="row">1</th>
-        <td>Mark</td>
-        <td>Otto</td>
-        <td>@mdo</td>
-        <td>
-                <button type="button" class="btn btn-outline-success">Approve</button>
-            </td>
-        <td>
-                <button type="button" class="btn btn-outline-danger">Deny</button>
-            </td>
-      </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
-      </tr>
-      <tr>
-        <th scope="row">3</th>
-        <td colspan="2">Larry the Bird</td>
-        <td>@twitter</td>
-      </tr>
-    </tbody>
-  </table>
+      <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">First</th>
+          <th scope="col">Last</th>
+          <th scope="col">Handle</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">1</th>
+          <td>Mark</td>
+          <td>Otto</td>
+          <td>@mdo</td>
+          <td>
+                  <button type="button" class="btn btn-outline-success">Approve</button>
+              </td>
+          <td>
+                  <button type="button" class="btn btn-outline-danger">Deny</button>
+              </td>
+        </tr>
+        <tr>
+          <th scope="row">2</th>
+          <td>Jacob</td>
+          <td>Thornton</td>
+          <td>@fat</td>
+        </tr>
+        <tr>
+          <th scope="row">3</th>
+          <td colspan="2">Larry the Bird</td>
+          <td>@twitter</td>
+        </tr>
+      </tbody>
+    </table>
       `;
 
     render = () => {
@@ -481,7 +481,11 @@ class ReimbursementsComponent {
 
     <br>
 
-   
+    <br>
+        
+    <h1 class="text-center">REIMB Inc.</h1>
+        
+    <br>
         
     <h5 class="text-center">Please submit your reimbursement</h5>
         
@@ -522,10 +526,19 @@ class ReimbursementsComponent {
                     <hr />
                     <div class="col-md-6 offset-md-4">
                         <button id="register-reimbursement" class="btn btn-primary">
-                            Submit Request
+                            Submit New Reimbursement Request
                         </button>
                         <br>
                         <h5 class="btn btn-link"><a id="back-to-dashboard">Back to Dashboard</a></h5>
+                    </div>
+
+                    <div>
+                        <div class="alert alert-danger text-center" id="alert-msg-reimbursement" role="alert">
+                            Please fill all fields.
+                        </div>
+                        <div class="text-center" id="reimbursement-success" role="alert">
+                            Submission successful. Redirecting to your Dashboard.
+                        </div>
                     </div>
                 </div>
             </div>
@@ -603,44 +616,39 @@ class ReimbursementsComponent {
 
 class EmployeeComponent {
     template = `
-    <div id="top-nav" class="navbar navbar-inverse navbar-static-top">
-   
-</div>
-<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
-    <ul class="nav">
-        <button class="btn btn-primary" id="new-reim-request"> <a>Create New Reimbursement</a></button>
-    </ul>
-</div><!-- /span-3 -->
-<div class="col-lg-10 col-md-10 col-sm-9 col-xs-12">
-    <!-- Right -->
-    <h1><strong><span class="fa fa-dashboard"></span> Your Reimbursement Requests</strong></h1>
-    <hr>
-    <div class="container">
-        <div class="row">
-            <table id="employee-reimbursements" class="table table-striped table-bordered"  cellspacing="5" width="100%">
-               
-                <tr>
-                    <th>Emp ID</th>
-                    <th>Reimb ID</th>
-                    <th>Amount</th>
-                    <th>Date Submitted</th>
-                    <th>Date Resolved</th>
-                    <th>Description</th>
-                    <th>Status</th>
-                    <th>Type</th>
-                </tr>
-                
-            </table>
+    <button class="btn btn-primary" id="new-reim-request"> <a>Create New Reimbursement</a></button>
+    <br>
+    <br>
+    <div class="col-lg-10 col-md-10 col-sm-9 col-xs-12">
+        <h3><strong><span class="fa fa-dashboard"></span> Your Reimbursement Requests</strong></h3>
+        <br>
+        <div class="container">
+            <div class="row">
+                <table id="employee-reimbursements" class="table table-striped table-bordered" cellspacing="5"
+                    width="100%">
+
+                    <tr>
+                        <th>Emp ID</th>
+                        <th>Reimb ID</th>
+                        <th>Amount</th>
+                        <th>Date Submitted</th>
+                        <th>Date Resolved</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Type</th>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
-</div>
-`;
+
+    `;
 
     render = () => {
-        // console.log("Rendering the EmployeeComponent template...");
+        console.log("Rendering the EmployeeComponent template...");
         PAGE_BODY.innerHTML = this.template;
         document.getElementById("new-reim-request").addEventListener("click", this.router.fetchComponent("Reimbursements").render);
-        // document.getElementById("logout-again").addEventListener("click", this.router.fetchComponent("Reimbursements").render);
+        document.getElementById("logout-again").addEventListener("click", this.router.fetchComponent("Reimbursements").render);
         this.createTable();
     }
 
